@@ -1,0 +1,21 @@
+# --- Secrets: NEVER commit (NFR-2) ---
+.env
+.env.*
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Vector DB: regenerable binary, rebuilt by `python ingest.py` ---
+data/chroma/
+
+# NOTE: data/raw/ and data/chunks.txt are intentionally NOT ignored.
+# They are the audit trail that lets a reviewer inspect the corpus
+# without re-running ingestion. Keep them tracked.

@@ -1,0 +1,1843 @@
+====================================================================================================
+HDFC MUTUAL FUND FAQ CORPUS - INSPECTABLE CHUNK DUMP
+====================================================================================================
+Generated (UTC)     : 2026-10-01T17:36:59+00:00
+Chunks              : 130
+  fact_card         : 80
+  prose_section     : 50
+Pages ingested      : 5
+Dropped (performance): 0
+Dropped (too short) : 0
+Dropped (duplicate) : 0
+PII-scrubbed chunks : 0
+
+Chunking            : size=380 chars, overlap=80 chars, min=40 chars
+Embedding model     : sentence-transformers/all-MiniLM-L6-v2 (384-dim)
+Vector DB           : hdfc_mf_faqs -> C:\Users\Kankana Dhar\OneDrive\Desktop\HDFC\data\chroma
+
+SOURCES (the only 5 pages used; all public Groww scheme pages):
+  1. [Large Cap] HDFC Large Cap Fund - Direct Growth
+     https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  2. [Flexi Cap] HDFC Flexi Cap Fund - Direct Growth
+     https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  3. [ELSS] HDFC ELSS Tax Saver Fund - Direct Growth
+     https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  4. [Small Cap] HDFC Small Cap Fund - Direct Growth
+     https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  5. [Balanced Advantage (Hybrid)] HDFC Balanced Advantage Fund - Direct Growth
+     https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+
+EXCLUSIONS BY DESIGN:
+  - No return, ranking, peer-comparison or performance figures.
+  - No fund-manager names (the JSON field and the page's own About
+    prose disagree; PRD section 7.4 - not answered until reconciled).
+  - No AMC-level AUM from the About prose (it repeats the same total on
+    every scheme page); scheme-level JSON AUM is used instead.
+  - No e-mail addresses, phone numbers or postal addresses.
+
+====================================================================================================
+
+----------------------------------------------------------------------------------------------------
+[0001] hdfc-large-cap-fund-direct-growth__expense_ratio__000
+  section        : expense_ratio
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 202   hash=66c185aa7a
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The expense ratio of HDFC Large Cap Fund Direct Growth is 1.03 % (base expense ratio 0.84 %). Expense ratio is the annual percentage of fund assets charged to the fund for management and administration.
+
+----------------------------------------------------------------------------------------------------
+[0002] hdfc-large-cap-fund-direct-growth__exit_load__000
+  section        : exit_load
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 219   hash=a30fcf4039
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The exit load of HDFC Large Cap Fund Direct Growth is: Exit load of 1% if redeemed within 1 year. Exit load is a fee payable to the fund house for redeeming units before the specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0003] hdfc-large-cap-fund-direct-growth__lock_in_period__000
+  section        : lock_in_period
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 107   hash=0291bf1faf
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Large Cap Fund Direct Growth has no lock-in period - units can be redeemed at any time after purchase.
+
+----------------------------------------------------------------------------------------------------
+[0004] hdfc-large-cap-fund-direct-growth__minimum_investment__000
+  section        : minimum_investment
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 193   hash=7cced7398c
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum for the 1st investment (lump sum) in HDFC Large Cap Fund Direct Growth is INR 100. The minimum additional investment is INR 100. The minimum redemption/withdrawal amount is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0005] hdfc-large-cap-fund-direct-growth__sip_minimum__000
+  section        : sip_minimum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 75   hash=e903cb72c9
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum SIP investment in HDFC Large Cap Fund Direct Growth is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0006] hdfc-large-cap-fund-direct-growth__benchmark__000
+  section        : benchmark
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 114   hash=f80eff4452
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The fund benchmark of HDFC Large Cap Fund Direct Growth is NIFTY 100 Total Return Index (listed as NIFTY 100 TRI).
+
+----------------------------------------------------------------------------------------------------
+[0007] hdfc-large-cap-fund-direct-growth__investment_objective__000
+  section        : investment_objective
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 175   hash=f0ab18d0c6
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment objective of HDFC Large Cap Fund Direct Growth: The scheme seeks to provide long-term capital appreciation/income by investing predominantly in Large-Cap companies.
+
+----------------------------------------------------------------------------------------------------
+[0008] hdfc-large-cap-fund-direct-growth__documents__000
+  section        : documents
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 194   hash=68e9e39d1a
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Scheme Information Document (SID), Key Information Memorandum (KIM) and monthly factsheet for HDFC Large Cap Fund Direct Growth are published by HDFC Mutual Fund at https://www.hdfcfund.com.
+
+----------------------------------------------------------------------------------------------------
+[0009] hdfc-large-cap-fund-direct-growth__documents_statements__000
+  section        : documents_statements
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 216   hash=3dc74e4825
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Registrar and Transfer Agent (RTA) for HDFC Large Cap Fund Direct Growth is CAMS. Account statements, tax statements and capital-gains statements are requested from the RTA or downloaded from the AMC/RTA website.
+
+----------------------------------------------------------------------------------------------------
+[0010] hdfc-large-cap-fund-direct-growth__documents_amc_page__000
+  section        : documents_amc_page
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 95   hash=4cc44aeaa4
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | All HDFC Mutual Fund schemes are listed at https://groww.in/mutual-funds/amc/hdfc-mutual-funds.
+
+----------------------------------------------------------------------------------------------------
+[0011] hdfc-large-cap-fund-direct-growth__scheme_identity__000
+  section        : scheme_identity
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 267   hash=ef7a94b87f
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Large Cap Fund Direct Growth is a equity scheme, large cap category, Direct plan, Growth option. Fund house: HDFC Mutual Fund. Date of incorporation of the scheme: 2013-01-01. Plan launch date on Groww: 01-Jan-2013. ISIN: INF179K01YV8. Groww scheme code: 119018.
+
+----------------------------------------------------------------------------------------------------
+[0012] hdfc-large-cap-fund-direct-growth__nav__000
+  section        : nav
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 87   hash=ea1f55a36e
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The latest NAV of HDFC Large Cap Fund Direct Growth is INR 1,161.706 as of 30-Sep-2026.
+
+----------------------------------------------------------------------------------------------------
+[0013] hdfc-large-cap-fund-direct-growth__aum__000
+  section        : aum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 180   hash=a3fc321fb9
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The scheme-level Assets Under Management (AUM) of HDFC Large Cap Fund Direct Growth is INR 39,933.37 crore as of 30-Sep-2026. This is the scheme's own AUM, not the AMC-level total.
+
+----------------------------------------------------------------------------------------------------
+[0014] hdfc-large-cap-fund-direct-growth__portfolio_turnover__000
+  section        : portfolio_turnover
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 118   hash=7f5626e835
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The portfolio turnover ratio of HDFC Large Cap Fund Direct Growth is 18 (annualised, as published on the source page).
+
+----------------------------------------------------------------------------------------------------
+[0015] hdfc-large-cap-fund-direct-growth__stamp_duty__000
+  section        : stamp_duty
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 142   hash=41d85e1b50
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty on investment in HDFC Large Cap Fund Direct Growth: 0.005% (from July 1st, 2020). Stamp duty is a tax payable on purchase of units.
+
+----------------------------------------------------------------------------------------------------
+[0016] hdfc-large-cap-fund-direct-growth__groww_rating__000
+  section        : groww_rating
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Large Cap Fund Direct Growth  [Large Cap]  code=119018
+  as_of          : 30-Sep-2026
+  char_len       : 136   hash=1384023a44
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Groww's platform rating for HDFC Large Cap Fund Direct Growth is 4 out of 5. This is a platform rating, not a regulatory risk indicator.
+
+----------------------------------------------------------------------------------------------------
+[0017] hdfc-large-cap-fund-direct-growth__minimum_investments__000
+  section        : minimum_investments
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 95   hash=b1e5afa59a
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Minimum investments
+  | Min. for 1st investment
+  | ₹100
+  | Min. for 2nd investment
+  | ₹100
+  | Min. for SIP
+  | ₹100
+
+----------------------------------------------------------------------------------------------------
+[0018] hdfc-large-cap-fund-direct-growth__exit_load_stamp_duty_tax__000
+  section        : exit_load_stamp_duty_tax
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 329   hash=c9b08c4370
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load, stamp duty and tax
+  | Exit load
+  | Exit load of 1% if redeemed within 1 year
+  | Stamp duty on investment:
+  | 0.005% (from July 1st, 2020)
+  | from July 1st 2020
+  | Tax implication
+  | If you redeem within one year, returns are taxed at 20%. If you redeem after one year, returns exceeding Rs 1.25 lakh in a financial year are taxed at 12.5%.
+
+----------------------------------------------------------------------------------------------------
+[0019] hdfc-large-cap-fund-direct-growth__investment_objective__001
+  section        : investment_objective
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 137   hash=5e6b13113f
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment Objective
+  | The scheme seeks to provide long-term capital appreciation/income by investing predominantly in Large-Cap companies.
+
+----------------------------------------------------------------------------------------------------
+[0020] hdfc-large-cap-fund-direct-growth__fund_benchmark__000
+  section        : fund_benchmark
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 43   hash=c7b0e1058a
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund benchmark
+  | NIFTY 100 Total Return Index
+
+----------------------------------------------------------------------------------------------------
+[0021] hdfc-large-cap-fund-direct-growth__expense_ratio_definition__000
+  section        : expense_ratio_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 217   hash=386e2770e1
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Expense ratio
+  | A fee payable to a mutual fund house for managing your mutual fund investments. It is the total percentage of a company's fund assets used for administrative, management, advertising, and other expenses.
+
+----------------------------------------------------------------------------------------------------
+[0022] hdfc-large-cap-fund-direct-growth__tax_definition__000
+  section        : tax_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 256   hash=f6c063f73e
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Tax
+  | A percentage of your capital gains payable to the government upon exiting your mutual fund investments. Taxation is categorized as long-term capital gains (LTCG) and short-term capital gains (STCG) depending on your holding period and the type of fund.
+
+----------------------------------------------------------------------------------------------------
+[0023] hdfc-large-cap-fund-direct-growth__exit_load_definition__000
+  section        : exit_load_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 159   hash=77fcec0efc
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load
+  | A fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0024] hdfc-large-cap-fund-direct-growth__stamp_duty_definition__000
+  section        : stamp_duty_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 82   hash=0f8efff685
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty
+  | A form of tax payable for the purchase or sale of an asset or security.
+
+----------------------------------------------------------------------------------------------------
+[0025] hdfc-large-cap-fund-direct-growth__scheme_details__000
+  section        : scheme_details
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 142   hash=82d3f71d91
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund house: HDFC Mutual Fund
+  | Date of Incorporation: 10 Dec 1999
+  | Launch Date: 10 Dec 1999
+  | Custodian: HDFC Bank
+  | Registrar & Transfer Agent: Cams
+
+----------------------------------------------------------------------------------------------------
+[0026] hdfc-large-cap-fund-direct-growth__riskometer__000
+  section        : riskometer
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Large Cap Fund - Direct Growth  [Large Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 263   hash=082109da8c
+  source_url     : https://groww.in/mutual-funds/hdfc-large-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:58+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Riskometer level of HDFC Large Cap Fund - Direct Growth: Very High. The source page displays this badge as 'Very High Risk'. On SEBI's six-level riskometer scale (Very Low, Low, Moderate, Moderately High, High, Very High), this scheme sits at the Very High level.
+
+----------------------------------------------------------------------------------------------------
+[0027] hdfc-equity-fund-direct-growth__expense_ratio__000
+  section        : expense_ratio
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 202   hash=fc24131272
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The expense ratio of HDFC Flexi Cap Direct Plan Growth is 0.77 % (base expense ratio 0.57 %). Expense ratio is the annual percentage of fund assets charged to the fund for management and administration.
+
+----------------------------------------------------------------------------------------------------
+[0028] hdfc-equity-fund-direct-growth__exit_load__000
+  section        : exit_load
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 219   hash=83c683875a
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The exit load of HDFC Flexi Cap Direct Plan Growth is: Exit load of 1% if redeemed within 1 year. Exit load is a fee payable to the fund house for redeeming units before the specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0029] hdfc-equity-fund-direct-growth__lock_in_period__000
+  section        : lock_in_period
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 107   hash=7aa82ad8a1
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Flexi Cap Direct Plan Growth has no lock-in period - units can be redeemed at any time after purchase.
+
+----------------------------------------------------------------------------------------------------
+[0030] hdfc-equity-fund-direct-growth__minimum_investment__000
+  section        : minimum_investment
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 193   hash=71c6df9719
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum for the 1st investment (lump sum) in HDFC Flexi Cap Direct Plan Growth is INR 100. The minimum additional investment is INR 100. The minimum redemption/withdrawal amount is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0031] hdfc-equity-fund-direct-growth__sip_minimum__000
+  section        : sip_minimum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 75   hash=9257fef8a2
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum SIP investment in HDFC Flexi Cap Direct Plan Growth is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0032] hdfc-equity-fund-direct-growth__benchmark__000
+  section        : benchmark
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 114   hash=b7521b28be
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The fund benchmark of HDFC Flexi Cap Direct Plan Growth is NIFTY 500 Total Return Index (listed as NIFTY 500 TRI).
+
+----------------------------------------------------------------------------------------------------
+[0033] hdfc-equity-fund-direct-growth__investment_objective__000
+  section        : investment_objective
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 198   hash=a4d0536989
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment objective of HDFC Flexi Cap Direct Plan Growth: The scheme seeks to generate capital appreciation / income from a portfolio, predominantly invested in equity & equity related instruments.
+
+----------------------------------------------------------------------------------------------------
+[0034] hdfc-equity-fund-direct-growth__documents__000
+  section        : documents
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 194   hash=b8a047243a
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Scheme Information Document (SID), Key Information Memorandum (KIM) and monthly factsheet for HDFC Flexi Cap Direct Plan Growth are published by HDFC Mutual Fund at https://www.hdfcfund.com.
+
+----------------------------------------------------------------------------------------------------
+[0035] hdfc-equity-fund-direct-growth__documents_statements__000
+  section        : documents_statements
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 216   hash=959b6bfdee
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Registrar and Transfer Agent (RTA) for HDFC Flexi Cap Direct Plan Growth is CAMS. Account statements, tax statements and capital-gains statements are requested from the RTA or downloaded from the AMC/RTA website.
+
+----------------------------------------------------------------------------------------------------
+[0036] hdfc-equity-fund-direct-growth__documents_amc_page__000
+  section        : documents_amc_page
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 95   hash=4cc44aeaa4
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | All HDFC Mutual Fund schemes are listed at https://groww.in/mutual-funds/amc/hdfc-mutual-funds.
+
+----------------------------------------------------------------------------------------------------
+[0037] hdfc-equity-fund-direct-growth__scheme_identity__000
+  section        : scheme_identity
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 267   hash=1782d5e012
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Flexi Cap Direct Plan Growth is a equity scheme, flexi cap category, Direct plan, Growth option. Fund house: HDFC Mutual Fund. Date of incorporation of the scheme: 2013-01-01. Plan launch date on Groww: 01-Jan-2013. ISIN: INF179K01UT0. Groww scheme code: 118955.
+
+----------------------------------------------------------------------------------------------------
+[0038] hdfc-equity-fund-direct-growth__nav__000
+  section        : nav
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 87   hash=34ca0f9348
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The latest NAV of HDFC Flexi Cap Direct Plan Growth is INR 2,169.071 as of 30-Sep-2026.
+
+----------------------------------------------------------------------------------------------------
+[0039] hdfc-equity-fund-direct-growth__aum__000
+  section        : aum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 181   hash=46ccc1b08a
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The scheme-level Assets Under Management (AUM) of HDFC Flexi Cap Direct Plan Growth is INR 113,606.47 crore as of 30-Sep-2026. This is the scheme's own AUM, not the AMC-level total.
+
+----------------------------------------------------------------------------------------------------
+[0040] hdfc-equity-fund-direct-growth__portfolio_turnover__000
+  section        : portfolio_turnover
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 118   hash=5453a0b775
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The portfolio turnover ratio of HDFC Flexi Cap Direct Plan Growth is 29 (annualised, as published on the source page).
+
+----------------------------------------------------------------------------------------------------
+[0041] hdfc-equity-fund-direct-growth__stamp_duty__000
+  section        : stamp_duty
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 142   hash=aad6196519
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty on investment in HDFC Flexi Cap Direct Plan Growth: 0.005% (from July 1st, 2020). Stamp duty is a tax payable on purchase of units.
+
+----------------------------------------------------------------------------------------------------
+[0042] hdfc-equity-fund-direct-growth__groww_rating__000
+  section        : groww_rating
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Flexi Cap Direct Plan Growth  [Flexi Cap]  code=118955
+  as_of          : 30-Sep-2026
+  char_len       : 136   hash=585faf5c9a
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Groww's platform rating for HDFC Flexi Cap Direct Plan Growth is 5 out of 5. This is a platform rating, not a regulatory risk indicator.
+
+----------------------------------------------------------------------------------------------------
+[0043] hdfc-equity-fund-direct-growth__minimum_investments__000
+  section        : minimum_investments
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 95   hash=b1e5afa59a
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Minimum investments
+  | Min. for 1st investment
+  | ₹100
+  | Min. for 2nd investment
+  | ₹100
+  | Min. for SIP
+  | ₹100
+
+----------------------------------------------------------------------------------------------------
+[0044] hdfc-equity-fund-direct-growth__exit_load_stamp_duty_tax__000
+  section        : exit_load_stamp_duty_tax
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 329   hash=c9b08c4370
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load, stamp duty and tax
+  | Exit load
+  | Exit load of 1% if redeemed within 1 year
+  | Stamp duty on investment:
+  | 0.005% (from July 1st, 2020)
+  | from July 1st 2020
+  | Tax implication
+  | If you redeem within one year, returns are taxed at 20%. If you redeem after one year, returns exceeding Rs 1.25 lakh in a financial year are taxed at 12.5%.
+
+----------------------------------------------------------------------------------------------------
+[0045] hdfc-equity-fund-direct-growth__investment_objective__001
+  section        : investment_objective
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 160   hash=d0d61b14d8
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment Objective
+  | The scheme seeks to generate capital appreciation / income from a portfolio, predominantly invested in equity & equity related instruments.
+
+----------------------------------------------------------------------------------------------------
+[0046] hdfc-equity-fund-direct-growth__fund_benchmark__000
+  section        : fund_benchmark
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 43   hash=818192c589
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund benchmark
+  | NIFTY 500 Total Return Index
+
+----------------------------------------------------------------------------------------------------
+[0047] hdfc-equity-fund-direct-growth__expense_ratio_definition__000
+  section        : expense_ratio_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 217   hash=386e2770e1
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Expense ratio
+  | A fee payable to a mutual fund house for managing your mutual fund investments. It is the total percentage of a company's fund assets used for administrative, management, advertising, and other expenses.
+
+----------------------------------------------------------------------------------------------------
+[0048] hdfc-equity-fund-direct-growth__tax_definition__000
+  section        : tax_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 256   hash=f6c063f73e
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Tax
+  | A percentage of your capital gains payable to the government upon exiting your mutual fund investments. Taxation is categorized as long-term capital gains (LTCG) and short-term capital gains (STCG) depending on your holding period and the type of fund.
+
+----------------------------------------------------------------------------------------------------
+[0049] hdfc-equity-fund-direct-growth__exit_load_definition__000
+  section        : exit_load_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 159   hash=77fcec0efc
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load
+  | A fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0050] hdfc-equity-fund-direct-growth__stamp_duty_definition__000
+  section        : stamp_duty_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 82   hash=0f8efff685
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty
+  | A form of tax payable for the purchase or sale of an asset or security.
+
+----------------------------------------------------------------------------------------------------
+[0051] hdfc-equity-fund-direct-growth__scheme_details__000
+  section        : scheme_details
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 146   hash=7d381f0271
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund house: HDFC Mutual Fund
+  | Date of Incorporation: 10 Dec 1999
+  | Launch Date: 10 Dec 1999
+  | Custodian: Deutsche Bank
+  | Registrar & Transfer Agent: Cams
+
+----------------------------------------------------------------------------------------------------
+[0052] hdfc-equity-fund-direct-growth__riskometer__000
+  section        : riskometer
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Flexi Cap Fund - Direct Growth  [Flexi Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 263   hash=a57b2d5a72
+  source_url     : https://groww.in/mutual-funds/hdfc-equity-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Riskometer level of HDFC Flexi Cap Fund - Direct Growth: Very High. The source page displays this badge as 'Very High Risk'. On SEBI's six-level riskometer scale (Very Low, Low, Moderate, Moderately High, High, Very High), this scheme sits at the Very High level.
+
+----------------------------------------------------------------------------------------------------
+[0053] hdfc-elss-tax-saver-fund-direct-plan-growth__expense_ratio__000
+  section        : expense_ratio
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 212   hash=b331090e9e
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The expense ratio of HDFC ELSS Tax Saver Fund Direct Plan Growth is 1.21 % (base expense ratio 0.97 %). Expense ratio is the annual percentage of fund assets charged to the fund for management and administration.
+
+----------------------------------------------------------------------------------------------------
+[0054] hdfc-elss-tax-saver-fund-direct-plan-growth__exit_load__000
+  section        : exit_load
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 123   hash=59ead9c26b
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The exit load of HDFC ELSS Tax Saver Fund Direct Plan Growth is Nil - there is no exit load on redemption, full or partial.
+
+----------------------------------------------------------------------------------------------------
+[0055] hdfc-elss-tax-saver-fund-direct-plan-growth__lock_in_period__000
+  section        : lock_in_period
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 134   hash=6e9d0c914f
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The lock-in period of HDFC ELSS Tax Saver Fund Direct Plan Growth is 3 years. Units cannot be redeemed before the lock-in period ends.
+
+----------------------------------------------------------------------------------------------------
+[0056] hdfc-elss-tax-saver-fund-direct-plan-growth__minimum_investment__000
+  section        : minimum_investment
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 253   hash=ed7353110a
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum for the 1st investment (lump sum) in HDFC ELSS Tax Saver Fund Direct Plan Growth is INR 500. The minimum additional investment is INR 500. Purchase amounts must be in multiples of INR 500. The minimum redemption/withdrawal amount is INR 500.
+
+----------------------------------------------------------------------------------------------------
+[0057] hdfc-elss-tax-saver-fund-direct-plan-growth__sip_minimum__000
+  section        : sip_minimum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 134   hash=f1052355b5
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum SIP investment in HDFC ELSS Tax Saver Fund Direct Plan Growth is INR 500. SIP instalments must be in multiples of INR 500.
+
+----------------------------------------------------------------------------------------------------
+[0058] hdfc-elss-tax-saver-fund-direct-plan-growth__benchmark__000
+  section        : benchmark
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 124   hash=2169311853
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The fund benchmark of HDFC ELSS Tax Saver Fund Direct Plan Growth is NIFTY 500 Total Return Index (listed as NIFTY 500 TRI).
+
+----------------------------------------------------------------------------------------------------
+[0059] hdfc-elss-tax-saver-fund-direct-plan-growth__investment_objective__000
+  section        : investment_objective
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 210   hash=967e021141
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment objective of HDFC ELSS Tax Saver Fund Direct Plan Growth: The scheme seeks to generate capital appreciation / income from a portfolio, comprising predominantly of equity & equity related instruments.
+
+----------------------------------------------------------------------------------------------------
+[0060] hdfc-elss-tax-saver-fund-direct-plan-growth__documents__000
+  section        : documents
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 204   hash=0fd60e6026
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Scheme Information Document (SID), Key Information Memorandum (KIM) and monthly factsheet for HDFC ELSS Tax Saver Fund Direct Plan Growth are published by HDFC Mutual Fund at https://www.hdfcfund.com.
+
+----------------------------------------------------------------------------------------------------
+[0061] hdfc-elss-tax-saver-fund-direct-plan-growth__documents_statements__000
+  section        : documents_statements
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 226   hash=fb6b389de5
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Registrar and Transfer Agent (RTA) for HDFC ELSS Tax Saver Fund Direct Plan Growth is CAMS. Account statements, tax statements and capital-gains statements are requested from the RTA or downloaded from the AMC/RTA website.
+
+----------------------------------------------------------------------------------------------------
+[0062] hdfc-elss-tax-saver-fund-direct-plan-growth__documents_amc_page__000
+  section        : documents_amc_page
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 95   hash=4cc44aeaa4
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | All HDFC Mutual Fund schemes are listed at https://groww.in/mutual-funds/amc/hdfc-mutual-funds.
+
+----------------------------------------------------------------------------------------------------
+[0063] hdfc-elss-tax-saver-fund-direct-plan-growth__scheme_identity__000
+  section        : scheme_identity
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 272   hash=ceefdb5bdf
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC ELSS Tax Saver Fund Direct Plan Growth is a equity scheme, elss category, Direct plan, Growth option. Fund house: HDFC Mutual Fund. Date of incorporation of the scheme: 2013-01-01. Plan launch date on Groww: 01-Jan-2013. ISIN: INF179K01YS4. Groww scheme code: 119060.
+
+----------------------------------------------------------------------------------------------------
+[0064] hdfc-elss-tax-saver-fund-direct-plan-growth__nav__000
+  section        : nav
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 97   hash=fff5fb6e90
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The latest NAV of HDFC ELSS Tax Saver Fund Direct Plan Growth is INR 1,416.896 as of 30-Sep-2026.
+
+----------------------------------------------------------------------------------------------------
+[0065] hdfc-elss-tax-saver-fund-direct-plan-growth__aum__000
+  section        : aum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 190   hash=0b5b0d4cde
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The scheme-level Assets Under Management (AUM) of HDFC ELSS Tax Saver Fund Direct Plan Growth is INR 15,991.78 crore as of 30-Sep-2026. This is the scheme's own AUM, not the AMC-level total.
+
+----------------------------------------------------------------------------------------------------
+[0066] hdfc-elss-tax-saver-fund-direct-plan-growth__portfolio_turnover__000
+  section        : portfolio_turnover
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 128   hash=2e0c692bc2
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The portfolio turnover ratio of HDFC ELSS Tax Saver Fund Direct Plan Growth is 32 (annualised, as published on the source page).
+
+----------------------------------------------------------------------------------------------------
+[0067] hdfc-elss-tax-saver-fund-direct-plan-growth__stamp_duty__000
+  section        : stamp_duty
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 152   hash=5ea6cedb03
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty on investment in HDFC ELSS Tax Saver Fund Direct Plan Growth: 0.005% (from July 1st, 2020). Stamp duty is a tax payable on purchase of units.
+
+----------------------------------------------------------------------------------------------------
+[0068] hdfc-elss-tax-saver-fund-direct-plan-growth__groww_rating__000
+  section        : groww_rating
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC ELSS Tax Saver Fund Direct Plan Growth  [ELSS]  code=119060
+  as_of          : 30-Sep-2026
+  char_len       : 146   hash=e236d2df70
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Groww's platform rating for HDFC ELSS Tax Saver Fund Direct Plan Growth is 5 out of 5. This is a platform rating, not a regulatory risk indicator.
+
+----------------------------------------------------------------------------------------------------
+[0069] hdfc-elss-tax-saver-fund-direct-plan-growth__minimum_investments__000
+  section        : minimum_investments
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 95   hash=3d4eaa8b40
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Minimum investments
+  | Min. for 1st investment
+  | ₹500
+  | Min. for 2nd investment
+  | ₹500
+  | Min. for SIP
+  | ₹500
+
+----------------------------------------------------------------------------------------------------
+[0070] hdfc-elss-tax-saver-fund-direct-plan-growth__exit_load_stamp_duty_tax__000
+  section        : exit_load_stamp_duty_tax
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 291   hash=a2f18c7f3f
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load, stamp duty and tax
+  | Exit load
+  | Nil
+  | Stamp duty on investment:
+  | 0.005% (from July 1st, 2020)
+  | from July 1st 2020
+  | Tax implication
+  | If you redeem within one year, returns are taxed at 20%. If you redeem after one year, returns exceeding Rs 1.25 lakh in a financial year are taxed at 12.5%.
+
+----------------------------------------------------------------------------------------------------
+[0071] hdfc-elss-tax-saver-fund-direct-plan-growth__investment_objective__001
+  section        : investment_objective
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 162   hash=873a50d779
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment Objective
+  | The scheme seeks to generate capital appreciation / income from a portfolio, comprising predominantly of equity & equity related instruments.
+
+----------------------------------------------------------------------------------------------------
+[0072] hdfc-elss-tax-saver-fund-direct-plan-growth__fund_benchmark__000
+  section        : fund_benchmark
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 43   hash=818192c589
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund benchmark
+  | NIFTY 500 Total Return Index
+
+----------------------------------------------------------------------------------------------------
+[0073] hdfc-elss-tax-saver-fund-direct-plan-growth__expense_ratio_definition__000
+  section        : expense_ratio_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 217   hash=386e2770e1
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Expense ratio
+  | A fee payable to a mutual fund house for managing your mutual fund investments. It is the total percentage of a company's fund assets used for administrative, management, advertising, and other expenses.
+
+----------------------------------------------------------------------------------------------------
+[0074] hdfc-elss-tax-saver-fund-direct-plan-growth__tax_definition__000
+  section        : tax_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 256   hash=f6c063f73e
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Tax
+  | A percentage of your capital gains payable to the government upon exiting your mutual fund investments. Taxation is categorized as long-term capital gains (LTCG) and short-term capital gains (STCG) depending on your holding period and the type of fund.
+
+----------------------------------------------------------------------------------------------------
+[0075] hdfc-elss-tax-saver-fund-direct-plan-growth__exit_load_definition__000
+  section        : exit_load_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 159   hash=77fcec0efc
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load
+  | A fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0076] hdfc-elss-tax-saver-fund-direct-plan-growth__stamp_duty_definition__000
+  section        : stamp_duty_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 82   hash=0f8efff685
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty
+  | A form of tax payable for the purchase or sale of an asset or security.
+
+----------------------------------------------------------------------------------------------------
+[0077] hdfc-elss-tax-saver-fund-direct-plan-growth__scheme_details__000
+  section        : scheme_details
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 146   hash=7d381f0271
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund house: HDFC Mutual Fund
+  | Date of Incorporation: 10 Dec 1999
+  | Launch Date: 10 Dec 1999
+  | Custodian: Deutsche Bank
+  | Registrar & Transfer Agent: Cams
+
+----------------------------------------------------------------------------------------------------
+[0078] hdfc-elss-tax-saver-fund-direct-plan-growth__riskometer__000
+  section        : riskometer
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC ELSS Tax Saver Fund - Direct Growth  [ELSS]  code=
+  as_of          : (not stated on page)
+  char_len       : 268   hash=d917c30e7c
+  source_url     : https://groww.in/mutual-funds/hdfc-elss-tax-saver-fund-direct-plan-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Riskometer level of HDFC ELSS Tax Saver Fund - Direct Growth: Very High. The source page displays this badge as 'Very High Risk'. On SEBI's six-level riskometer scale (Very Low, Low, Moderate, Moderately High, High, Very High), this scheme sits at the Very High level.
+
+----------------------------------------------------------------------------------------------------
+[0079] hdfc-small-cap-fund-direct-growth__expense_ratio__000
+  section        : expense_ratio
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 202   hash=55b519fb4e
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The expense ratio of HDFC Small Cap Fund Direct Growth is 0.78 % (base expense ratio 0.63 %). Expense ratio is the annual percentage of fund assets charged to the fund for management and administration.
+
+----------------------------------------------------------------------------------------------------
+[0080] hdfc-small-cap-fund-direct-growth__exit_load__000
+  section        : exit_load
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 219   hash=f68d812f2a
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The exit load of HDFC Small Cap Fund Direct Growth is: Exit load of 1% if redeemed within 1 year. Exit load is a fee payable to the fund house for redeeming units before the specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0081] hdfc-small-cap-fund-direct-growth__lock_in_period__000
+  section        : lock_in_period
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 107   hash=69485670ba
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Small Cap Fund Direct Growth has no lock-in period - units can be redeemed at any time after purchase.
+
+----------------------------------------------------------------------------------------------------
+[0082] hdfc-small-cap-fund-direct-growth__minimum_investment__000
+  section        : minimum_investment
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 193   hash=2f7c68a2d7
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum for the 1st investment (lump sum) in HDFC Small Cap Fund Direct Growth is INR 100. The minimum additional investment is INR 100. The minimum redemption/withdrawal amount is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0083] hdfc-small-cap-fund-direct-growth__sip_minimum__000
+  section        : sip_minimum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 75   hash=32d85dc44d
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum SIP investment in HDFC Small Cap Fund Direct Growth is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0084] hdfc-small-cap-fund-direct-growth__benchmark__000
+  section        : benchmark
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 128   hash=fb2f85848f
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The fund benchmark of HDFC Small Cap Fund Direct Growth is BSE 250 SmallCap Total Return Index (listed as BSE 250 SmallCap TRI).
+
+----------------------------------------------------------------------------------------------------
+[0085] hdfc-small-cap-fund-direct-growth__investment_objective__000
+  section        : investment_objective
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 176   hash=33239e7c5b
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment objective of HDFC Small Cap Fund Direct Growth: The scheme seeks to provide long-term capital appreciation /income by investing predominantly in Small-Cap companies.
+
+----------------------------------------------------------------------------------------------------
+[0086] hdfc-small-cap-fund-direct-growth__documents__000
+  section        : documents
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 194   hash=9231ec3258
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Scheme Information Document (SID), Key Information Memorandum (KIM) and monthly factsheet for HDFC Small Cap Fund Direct Growth are published by HDFC Mutual Fund at https://www.hdfcfund.com.
+
+----------------------------------------------------------------------------------------------------
+[0087] hdfc-small-cap-fund-direct-growth__documents_statements__000
+  section        : documents_statements
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 216   hash=068af62309
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Registrar and Transfer Agent (RTA) for HDFC Small Cap Fund Direct Growth is CAMS. Account statements, tax statements and capital-gains statements are requested from the RTA or downloaded from the AMC/RTA website.
+
+----------------------------------------------------------------------------------------------------
+[0088] hdfc-small-cap-fund-direct-growth__documents_amc_page__000
+  section        : documents_amc_page
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 95   hash=4cc44aeaa4
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | All HDFC Mutual Fund schemes are listed at https://groww.in/mutual-funds/amc/hdfc-mutual-funds.
+
+----------------------------------------------------------------------------------------------------
+[0089] hdfc-small-cap-fund-direct-growth__scheme_identity__000
+  section        : scheme_identity
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 267   hash=3fd6d772cd
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Small Cap Fund Direct Growth is a equity scheme, small cap category, Direct plan, Growth option. Fund house: HDFC Mutual Fund. Date of incorporation of the scheme: 2013-01-01. Plan launch date on Groww: 01-Jan-2013. ISIN: INF179KA1RW5. Groww scheme code: 130503.
+
+----------------------------------------------------------------------------------------------------
+[0090] hdfc-small-cap-fund-direct-growth__nav__000
+  section        : nav
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 85   hash=0feb74a582
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The latest NAV of HDFC Small Cap Fund Direct Growth is INR 156.267 as of 30-Sep-2026.
+
+----------------------------------------------------------------------------------------------------
+[0091] hdfc-small-cap-fund-direct-growth__aum__000
+  section        : aum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 180   hash=181849266c
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The scheme-level Assets Under Management (AUM) of HDFC Small Cap Fund Direct Growth is INR 41,890.86 crore as of 30-Sep-2026. This is the scheme's own AUM, not the AMC-level total.
+
+----------------------------------------------------------------------------------------------------
+[0092] hdfc-small-cap-fund-direct-growth__portfolio_turnover__000
+  section        : portfolio_turnover
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 117   hash=7728c206ad
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The portfolio turnover ratio of HDFC Small Cap Fund Direct Growth is 6 (annualised, as published on the source page).
+
+----------------------------------------------------------------------------------------------------
+[0093] hdfc-small-cap-fund-direct-growth__stamp_duty__000
+  section        : stamp_duty
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 142   hash=5fc5de61df
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty on investment in HDFC Small Cap Fund Direct Growth: 0.005% (from July 1st, 2020). Stamp duty is a tax payable on purchase of units.
+
+----------------------------------------------------------------------------------------------------
+[0094] hdfc-small-cap-fund-direct-growth__groww_rating__000
+  section        : groww_rating
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Small Cap Fund Direct Growth  [Small Cap]  code=130503
+  as_of          : 30-Sep-2026
+  char_len       : 136   hash=1156e6298d
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Groww's platform rating for HDFC Small Cap Fund Direct Growth is 3 out of 5. This is a platform rating, not a regulatory risk indicator.
+
+----------------------------------------------------------------------------------------------------
+[0095] hdfc-small-cap-fund-direct-growth__minimum_investments__000
+  section        : minimum_investments
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 95   hash=b1e5afa59a
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Minimum investments
+  | Min. for 1st investment
+  | ₹100
+  | Min. for 2nd investment
+  | ₹100
+  | Min. for SIP
+  | ₹100
+
+----------------------------------------------------------------------------------------------------
+[0096] hdfc-small-cap-fund-direct-growth__exit_load_stamp_duty_tax__000
+  section        : exit_load_stamp_duty_tax
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 329   hash=c9b08c4370
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load, stamp duty and tax
+  | Exit load
+  | Exit load of 1% if redeemed within 1 year
+  | Stamp duty on investment:
+  | 0.005% (from July 1st, 2020)
+  | from July 1st 2020
+  | Tax implication
+  | If you redeem within one year, returns are taxed at 20%. If you redeem after one year, returns exceeding Rs 1.25 lakh in a financial year are taxed at 12.5%.
+
+----------------------------------------------------------------------------------------------------
+[0097] hdfc-small-cap-fund-direct-growth__investment_objective__001
+  section        : investment_objective
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 138   hash=198ee3c6b5
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment Objective
+  | The scheme seeks to provide long-term capital appreciation /income by investing predominantly in Small-Cap companies.
+
+----------------------------------------------------------------------------------------------------
+[0098] hdfc-small-cap-fund-direct-growth__fund_benchmark__000
+  section        : fund_benchmark
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 50   hash=ad71203ba7
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund benchmark
+  | BSE 250 SmallCap Total Return Index
+
+----------------------------------------------------------------------------------------------------
+[0099] hdfc-small-cap-fund-direct-growth__expense_ratio_definition__000
+  section        : expense_ratio_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 217   hash=386e2770e1
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Expense ratio
+  | A fee payable to a mutual fund house for managing your mutual fund investments. It is the total percentage of a company's fund assets used for administrative, management, advertising, and other expenses.
+
+----------------------------------------------------------------------------------------------------
+[0100] hdfc-small-cap-fund-direct-growth__tax_definition__000
+  section        : tax_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 256   hash=f6c063f73e
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Tax
+  | A percentage of your capital gains payable to the government upon exiting your mutual fund investments. Taxation is categorized as long-term capital gains (LTCG) and short-term capital gains (STCG) depending on your holding period and the type of fund.
+
+----------------------------------------------------------------------------------------------------
+[0101] hdfc-small-cap-fund-direct-growth__exit_load_definition__000
+  section        : exit_load_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 159   hash=77fcec0efc
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load
+  | A fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0102] hdfc-small-cap-fund-direct-growth__stamp_duty_definition__000
+  section        : stamp_duty_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 82   hash=0f8efff685
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty
+  | A form of tax payable for the purchase or sale of an asset or security.
+
+----------------------------------------------------------------------------------------------------
+[0103] hdfc-small-cap-fund-direct-growth__scheme_details__000
+  section        : scheme_details
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 144   hash=c0dba30e62
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund house: HDFC Mutual Fund
+  | Date of Incorporation: 10 Dec 1999
+  | Launch Date: 10 Dec 1999
+  | Custodian: Citibank NA
+  | Registrar & Transfer Agent: Cams
+
+----------------------------------------------------------------------------------------------------
+[0104] hdfc-small-cap-fund-direct-growth__riskometer__000
+  section        : riskometer
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Small Cap Fund - Direct Growth  [Small Cap]  code=
+  as_of          : (not stated on page)
+  char_len       : 263   hash=59841116a6
+  source_url     : https://groww.in/mutual-funds/hdfc-small-cap-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Riskometer level of HDFC Small Cap Fund - Direct Growth: Very High. The source page displays this badge as 'Very High Risk'. On SEBI's six-level riskometer scale (Very Low, Low, Moderate, Moderately High, High, Very High), this scheme sits at the Very High level.
+
+----------------------------------------------------------------------------------------------------
+[0105] hdfc-balanced-advantage-fund-direct-growth__expense_ratio__000
+  section        : expense_ratio
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 211   hash=5abd84e103
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The expense ratio of HDFC Balanced Advantage Fund Direct Growth is 0.78 % (base expense ratio 0.64 %). Expense ratio is the annual percentage of fund assets charged to the fund for management and administration.
+
+----------------------------------------------------------------------------------------------------
+[0106] hdfc-balanced-advantage-fund-direct-growth__exit_load__000
+  section        : exit_load
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 290   hash=7d53e7822d
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The exit load of HDFC Balanced Advantage Fund Direct Growth is: Exit Load for units in excess of 15% of the investment,1% will be charged for redemption within 1 year.. Exit load is a fee payable to the fund house for redeeming units before the specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0107] hdfc-balanced-advantage-fund-direct-growth__lock_in_period__000
+  section        : lock_in_period
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 116   hash=d648ab141d
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Balanced Advantage Fund Direct Growth has no lock-in period - units can be redeemed at any time after purchase.
+
+----------------------------------------------------------------------------------------------------
+[0108] hdfc-balanced-advantage-fund-direct-growth__minimum_investment__000
+  section        : minimum_investment
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 202   hash=3c8aab05be
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum for the 1st investment (lump sum) in HDFC Balanced Advantage Fund Direct Growth is INR 100. The minimum additional investment is INR 100. The minimum redemption/withdrawal amount is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0109] hdfc-balanced-advantage-fund-direct-growth__sip_minimum__000
+  section        : sip_minimum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 84   hash=7b9b721ef1
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The minimum SIP investment in HDFC Balanced Advantage Fund Direct Growth is INR 100.
+
+----------------------------------------------------------------------------------------------------
+[0110] hdfc-balanced-advantage-fund-direct-growth__benchmark__000
+  section        : benchmark
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 111   hash=028e469a77
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The fund benchmark of HDFC Balanced Advantage Fund Direct Growth is NIFTY 50 Hybrid Composite Debt 50:50 Index.
+
+----------------------------------------------------------------------------------------------------
+[0111] hdfc-balanced-advantage-fund-direct-growth__investment_objective__000
+  section        : investment_objective
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 186   hash=a528817e88
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment objective of HDFC Balanced Advantage Fund Direct Growth: The Scheme seeks to provide long term capital appreciation / income from a dynamic mix of equity and debt investments.
+
+----------------------------------------------------------------------------------------------------
+[0112] hdfc-balanced-advantage-fund-direct-growth__documents__000
+  section        : documents
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 203   hash=e58a2c530e
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Scheme Information Document (SID), Key Information Memorandum (KIM) and monthly factsheet for HDFC Balanced Advantage Fund Direct Growth are published by HDFC Mutual Fund at https://www.hdfcfund.com.
+
+----------------------------------------------------------------------------------------------------
+[0113] hdfc-balanced-advantage-fund-direct-growth__documents_statements__000
+  section        : documents_statements
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 225   hash=cd340dc24c
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The Registrar and Transfer Agent (RTA) for HDFC Balanced Advantage Fund Direct Growth is CAMS. Account statements, tax statements and capital-gains statements are requested from the RTA or downloaded from the AMC/RTA website.
+
+----------------------------------------------------------------------------------------------------
+[0114] hdfc-balanced-advantage-fund-direct-growth__documents_amc_page__000
+  section        : documents_amc_page
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 95   hash=4cc44aeaa4
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | All HDFC Mutual Fund schemes are listed at https://groww.in/mutual-funds/amc/hdfc-mutual-funds.
+
+----------------------------------------------------------------------------------------------------
+[0115] hdfc-balanced-advantage-fund-direct-growth__scheme_identity__000
+  section        : scheme_identity
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 291   hash=d2ba654f57
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | HDFC Balanced Advantage Fund Direct Growth is a hybrid scheme, dynamic asset allocation category, Direct plan, Growth option. Fund house: HDFC Mutual Fund. Date of incorporation of the scheme: 2013-01-01. Plan launch date on Groww: 01-Jan-2013. ISIN: INF179K01WA6. Groww scheme code: 118968.
+
+----------------------------------------------------------------------------------------------------
+[0116] hdfc-balanced-advantage-fund-direct-growth__nav__000
+  section        : nav
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 94   hash=38f05de912
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The latest NAV of HDFC Balanced Advantage Fund Direct Growth is INR 549.919 as of 30-Sep-2026.
+
+----------------------------------------------------------------------------------------------------
+[0117] hdfc-balanced-advantage-fund-direct-growth__aum__000
+  section        : aum
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 190   hash=bfacf26a8a
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The scheme-level Assets Under Management (AUM) of HDFC Balanced Advantage Fund Direct Growth is INR 107,295.79 crore as of 30-Sep-2026. This is the scheme's own AUM, not the AMC-level total.
+
+----------------------------------------------------------------------------------------------------
+[0118] hdfc-balanced-advantage-fund-direct-growth__portfolio_turnover__000
+  section        : portfolio_turnover
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 127   hash=c538991c4d
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | The portfolio turnover ratio of HDFC Balanced Advantage Fund Direct Growth is 27 (annualised, as published on the source page).
+
+----------------------------------------------------------------------------------------------------
+[0119] hdfc-balanced-advantage-fund-direct-growth__stamp_duty__000
+  section        : stamp_duty
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 151   hash=8e200625f8
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty on investment in HDFC Balanced Advantage Fund Direct Growth: 0.005% (from July 1st, 2020). Stamp duty is a tax payable on purchase of units.
+
+----------------------------------------------------------------------------------------------------
+[0120] hdfc-balanced-advantage-fund-direct-growth__groww_rating__000
+  section        : groww_rating
+  producer       : fact_card  (from __NEXT_DATA__)
+  scheme         : HDFC Balanced Advantage Fund Direct Growth  [Dynamic Asset Allocation]  code=118968
+  as_of          : 30-Sep-2026
+  char_len       : 145   hash=e8fc4208cd
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Groww's platform rating for HDFC Balanced Advantage Fund Direct Growth is 5 out of 5. This is a platform rating, not a regulatory risk indicator.
+
+----------------------------------------------------------------------------------------------------
+[0121] hdfc-balanced-advantage-fund-direct-growth__minimum_investments__000
+  section        : minimum_investments
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 95   hash=b1e5afa59a
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Minimum investments
+  | Min. for 1st investment
+  | ₹100
+  | Min. for 2nd investment
+  | ₹100
+  | Min. for SIP
+  | ₹100
+
+----------------------------------------------------------------------------------------------------
+[0122] hdfc-balanced-advantage-fund-direct-growth__exit_load_stamp_duty_tax__000
+  section        : exit_load_stamp_duty_tax
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 391   hash=7ae4054344
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load, stamp duty and tax
+  | Exit load
+  | Exit Load for units in excess of 15% of the investment,1% will be charged for redemption within 1 year.
+  | Stamp duty on investment:
+  | 0.005% (from July 1st, 2020)
+  | from July 1st 2020
+  | Tax implication
+  | If you redeem within one year, returns are taxed at 20%. If you redeem after one year, returns exceeding Rs 1.25 lakh in a financial year are taxed at 12.5%.
+
+----------------------------------------------------------------------------------------------------
+[0123] hdfc-balanced-advantage-fund-direct-growth__investment_objective__001
+  section        : investment_objective
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 139   hash=1e838518a3
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Investment Objective
+  | The Scheme seeks to provide long term capital appreciation / income from a dynamic mix of equity and debt investments.
+
+----------------------------------------------------------------------------------------------------
+[0124] hdfc-balanced-advantage-fund-direct-growth__fund_benchmark__000
+  section        : fund_benchmark
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 57   hash=921a40c77c
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund benchmark
+  | NIFTY 50 Hybrid Composite Debt 50:50 Index
+
+----------------------------------------------------------------------------------------------------
+[0125] hdfc-balanced-advantage-fund-direct-growth__expense_ratio_definition__000
+  section        : expense_ratio_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 217   hash=386e2770e1
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Expense ratio
+  | A fee payable to a mutual fund house for managing your mutual fund investments. It is the total percentage of a company's fund assets used for administrative, management, advertising, and other expenses.
+
+----------------------------------------------------------------------------------------------------
+[0126] hdfc-balanced-advantage-fund-direct-growth__tax_definition__000
+  section        : tax_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 256   hash=f6c063f73e
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Tax
+  | A percentage of your capital gains payable to the government upon exiting your mutual fund investments. Taxation is categorized as long-term capital gains (LTCG) and short-term capital gains (STCG) depending on your holding period and the type of fund.
+
+----------------------------------------------------------------------------------------------------
+[0127] hdfc-balanced-advantage-fund-direct-growth__exit_load_definition__000
+  section        : exit_load_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 159   hash=77fcec0efc
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Exit load
+  | A fee payable to a mutual fund house for exiting a fund (fully or partially) before the completion of a specified period from the date of investment.
+
+----------------------------------------------------------------------------------------------------
+[0128] hdfc-balanced-advantage-fund-direct-growth__stamp_duty_definition__000
+  section        : stamp_duty_definition
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 82   hash=0f8efff685
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Stamp duty
+  | A form of tax payable for the purchase or sale of an asset or security.
+
+----------------------------------------------------------------------------------------------------
+[0129] hdfc-balanced-advantage-fund-direct-growth__scheme_details__000
+  section        : scheme_details
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 142   hash=82d3f71d91
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Fund house: HDFC Mutual Fund
+  | Date of Incorporation: 10 Dec 1999
+  | Launch Date: 10 Dec 1999
+  | Custodian: HDFC Bank
+  | Registrar & Transfer Agent: Cams
+
+----------------------------------------------------------------------------------------------------
+[0130] hdfc-balanced-advantage-fund-direct-growth__riskometer__000
+  section        : riskometer
+  producer       : prose_section  (from visible_text)
+  scheme         : HDFC Balanced Advantage Fund - Direct Growth  [Balanced Advantage (Hybrid)]  code=
+  as_of          : (not stated on page)
+  char_len       : 272   hash=8a7f2b5893
+  source_url     : https://groww.in/mutual-funds/hdfc-balanced-advantage-fund-direct-growth
+  ingested_at    : 2026-10-01T17:36:59+00:00
+
+  ------------------------------------------------------------------------------------------------
+  | Riskometer level of HDFC Balanced Advantage Fund - Direct Growth: Very High. The source page displays this badge as 'Very High Risk'. On SEBI's six-level riskometer scale (Very Low, Low, Moderate, Moderately High, High, Very High), this scheme sits at the Very High level.
