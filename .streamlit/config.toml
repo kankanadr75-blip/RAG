@@ -1,0 +1,18 @@
+# Streamlit configuration.
+# Community Cloud only honours ONE config.toml, at the repository root, so this
+# file is deliberately placed there rather than in a subdirectory.
+
+[browser]
+# Phone-home analytics. Disabled on purpose: this is a public demo and there is
+# no reason for it to report usage.
+gatherUsageStats = false
+
+[server]
+# No browser or prompt in a container - without this Streamlit tries to open a
+# browser and blocks waiting on input.
+headless = true
+
+[theme]
+# Matches the Streamlit default light theme; declared so the app renders the
+# same way in a browser and when embedded.
+base = "light"

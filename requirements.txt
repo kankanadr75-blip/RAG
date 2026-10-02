@@ -1,6 +1,21 @@
 # Mutual Fund FAQ Assistant (RAG Chatbot) - dependencies
 # Verified against Python 3.13.5 on Windows (CPU-only, no GPU required).
 
+# --- CPU-only torch --------------------------------------------------------
+# The default Linux wheel for torch 2.14.0 pulls in nvidia-cudnn / nccl /
+# cusparselt / nvshmem + triton - several GB of CUDA on a host with no GPU,
+# which either fails the install or blows the deploy's memory budget.
+#
+# The `+cpu` local-version build exists ONLY on the PyTorch CPU index, so this
+# pin forces the CPU wheel while `--extra-index-url` keeps PyPI reachable for
+# every other dependency below. `--extra-index-url` rather than `--index-url`
+# deliberately: the latter would replace PyPI wholesale and break all of these.
+#
+# On Render the blueprint installs `torch==2.14.0` from the CPU index first.
+# That satisfies this pin too - `==2.14.0` matches `2.14.0+cpu` under PEP 440 -
+# so the CUDA wheel is still skipped there and the build is unaffected.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
 # --- Ingestion -------------------------------------------------------------
 beautifulsoup4==4.12.3
 lxml==5.3.0
@@ -8,7 +23,7 @@ requests==2.32.3
 
 # --- Embeddings + vector store --------------------------------------------
 sentence-transformers==6.1.0
-torch==2.14.0
+torch==2.14.0+cpu
 chromadb==1.5.9
 numpy==2.1.3
 pydantic==2.10.3

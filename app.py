@@ -49,7 +49,23 @@ REFUSAL_HEADINGS = {
 }
 
 
-@st.cache_resource(show_spinner="Loading the embedding model and index...")
+def _index_ready() -> bool:
+    """True when a non-empty vector collection is already on disk.
+
+    ``data/chroma/`` is git-ignored, so a fresh clone has no index. Render
+    builds one during its build step; Streamlit Community Cloud has no build
+    command at all, so something has to do it at runtime.
+    """
+    try:
+        import chromadb
+
+        client = chromadb.PersistentClient(path=str(config.CHROMA_DIR))
+        return client.get_collection(config.COLLECTION_NAME).count() > 0
+    except Exception:  # noqa: BLE001 - absent collection, or chroma not up yet
+        return False
+
+
+@st.cache_resource(show_spinner="Preparing the vector index (first run only)...")
 def get_engine() -> RAGEngine:
     """Load the model + vector store ONCE per session (task 9).
 
@@ -57,7 +73,24 @@ def get_engine() -> RAGEngine:
     seconds and would make the app feel broken. ``cache_resource`` (not
     ``cache_data``) is correct because the engine holds a model and a Chroma
     client - mutable, non-serialisable objects.
+
+    The ingestion call is the Community Cloud path. It is a no-op on Render,
+    where the blueprint already ran ``ingest.py --reembed`` during the build,
+    and a no-op on every run after the first because the container keeps
+    ``data/chroma/`` between sessions. It reads the cached pages in
+    ``data/raw/``, which ARE committed, so it needs no network to build the
+    corpus - only the one-time embedding-model download.
     """
+    if not _index_ready():
+        import ingest
+
+        st.info("No vector index found - building it from the cached source "
+                "pages. This happens once; later visits start instantly.")
+        if ingest.main([]) != 0:
+            raise RuntimeError(
+                "Ingestion failed, so there is nothing to answer from. See the "
+                "logs above for the coverage gaps that caused it."
+            )
     return RAGEngine()
 
 

@@ -3,6 +3,12 @@
 .env.*
 !.env.example
 
+# Streamlit Community Cloud secrets. The app itself never reads this file -
+# the key is pasted into the Cloud's Secrets panel, which injects it as an
+# environment variable - but a local secrets.toml is the conventional way to
+# develop against the same config, so it must never be committable.
+.streamlit/secrets.toml
+
 # --- Python ---
 __pycache__/
 *.py[cod]

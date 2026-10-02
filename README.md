@@ -195,6 +195,42 @@ rather than deploying an empty index.
 `PYTHON_VERSION` is pinned to 3.13.5 in both `.python-version` and the blueprint,
 because Render's default Python is not the version this was verified against.
 
+### Streamlit Community Cloud (free)
+
+Also supported, and unlike the Render Free tier its memory budget is not a
+problem — the documented ceiling is **2.7 GB** against a measured 563 MB peak.
+
+There is **no build command** on Community Cloud, which is the one real
+difference from Render. `data/chroma/` is gitignored, so there is no index to
+open. `app.py` therefore builds it on first run: `_index_ready()` checks for a
+non-empty collection and calls `ingest.main([])` if there is none. It reads the
+committed pages in `data/raw/`, so it needs no network for the corpus — only the
+one-time embedding-model download. On Render that branch never runs.
+
+Set the key in **Advanced settings → Secrets** as a single line:
+
+```toml
+GROQ_API_KEY = "gsk_..."
+```
+
+Community Cloud injects root-level secrets into the environment, so
+`config.py`'s `os.getenv("GROQ_API_KEY")` reads it with no code change.
+
+Pick **3.13** in the Python version dropdown. Community Cloud ignores
+`.python-version` and defaults to 3.12.
+
+`.streamlit/config.toml` sits at the repository root because Community Cloud
+recognises exactly one, there.
+
+### Vercel will not work
+
+Not a configuration problem — Vercel cannot run a Streamlit server. Its Python
+runtime wraps a single WSGI/ASGI handler into a serverless function, and
+Streamlit is a long-lived HTTP + WebSocket process that does not survive a
+function freeze. The read-only filesystem also breaks the HuggingFace model
+cache, and the 512 MB Hobby build limit is less than this build needs. Hosting
+here would mean rewriting the app as a JSON API plus a separate frontend.
+
 ---
 
 ## Architecture
