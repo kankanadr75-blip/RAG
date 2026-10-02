@@ -24,6 +24,8 @@ from __future__ import annotations
 import re
 import sys
 from dataclasses import dataclass, field
+import hashlib
+import logging
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -40,6 +42,34 @@ from guardrails import (  # noqa: E402
     pii_refusal,
     refusal_for,
 )
+
+logger = logging.getLogger("rag.llm")
+
+
+def _describe_llm_error(exc: BaseException) -> str:
+    """Turn a Groq SDK exception into one line a human can act on.
+
+    The SDK exception's own ``str()`` is the only place the real cause exists -
+    a 429 carries the exhausted token budget and the reset time, a 401 says the
+    credential is bad. That detail used to be logged only under ``verbose`` and
+    never reached the UI, so every failure looked like the same generic
+    "unavailable" warning. That is why a spent daily quota was indistinguishable
+    from a bad key.
+
+    Never includes the API key: only the exception's own text, which the SDK
+    builds from the response body.
+    """
+    status = getattr(exc, "status_code", None)
+    code = ""
+    body = getattr(exc, "body", None)
+    if isinstance(body, dict):
+        err = body.get("error") or {}
+        code = str(err.get("code") or "")
+    label = f"HTTP {status}" if status else type(exc).__name__
+    if code:
+        label = f"{label} {code}"
+    detail = " ".join(str(exc).split())
+    return f"{label}: {detail[:300]}"
 
 
 @dataclass(frozen=True)
@@ -171,6 +201,12 @@ class Answer:
     # rate limit). The UI must not claim "no language model configured" for the
     # third case - that hides a real fault behind a benign-sounding label.
     fallback_reason: str = ""
+    # The actual Groq failure behind `llm_error`, e.g. "HTTP 429
+    # rate_limit_exceeded: Rate limit reached ... Used 199669, Limit 200000".
+    # Empty unless generation failed. Lets the UI name the real cause instead
+    # of the catch-all "rate limit or network error", which cannot tell a spent
+    # daily quota from a bad key. Never contains the API key.
+    llm_error_detail: str = ""
     # Retained for the UI's "Sources used" transparency panel. Never rendered
     # as answer text - only chunk ids, sections and scores.
     hits: list["Hit"] = field(default_factory=list)
@@ -378,6 +414,9 @@ class RAGEngine:
         self._collection = None
         self.groq_client = None
         self.space = "cosine"
+        # Why the last generation failed, in words. Set by _generate, read by
+        # answer() so the UI can name the real cause instead of guessing.
+        self.last_llm_error = ""
 
         key = (config.GROQ_API_KEY or "").strip()
         self.has_llm = bool(key)
@@ -386,15 +425,25 @@ class RAGEngine:
                 from groq import Groq
 
                 self.groq_client = Groq(api_key=key)
+                # Logged at init so "is the key even loaded?" is answerable from
+                # the startup log, without printing the key itself.
+                logger.info("Groq client initialised: key loaded (%d chars, "
+                            "fingerprint %s), model=%s, max_tokens=%d",
+                            len(key),
+                            hashlib.sha256(key.encode()).hexdigest()[:12],
+                            config.GROQ_MODEL, config.GROQ_MAX_TOKENS)
             except Exception as exc:  # noqa: BLE001
                 # A broken/absent key degrades to extractive mode; it must not
                 # take down retrieval.
                 self.has_llm = False
-                print(f"  [WARN] Groq client unavailable ({exc}); "
-                      f"falling back to extractive mode.")
+                self.last_llm_error = _describe_llm_error(exc)
+                logger.error("Groq client unavailable (%s); falling back to "
+                             "extractive mode.", self.last_llm_error,
+                             exc_info=True)
         else:
-            print("  [INFO] No GROQ_API_KEY set - retrieval works, answers will "
-                  "be extractive (NFR-5). Set it in .env for natural language.")
+            logger.warning("No GROQ_API_KEY set - retrieval works, answers "
+                           "will be extractive (NFR-5). Set it in .env for "
+                           "natural language.")
 
     # -- lazy loaders -------------------------------------------------------
 
@@ -587,6 +636,11 @@ class RAGEngine:
         entirely - the retrieved chunk is still a valid factual answer.
         """
         if self.groq_client is None:
+            logger.warning(
+                "generation skipped: no GROQ_API_KEY configured "
+                "(key present=%s, model=%s)",
+                bool(config.GROQ_API_KEY), config.GROQ_MODEL,
+            )
             return ""
 
         messages = [
@@ -601,6 +655,7 @@ class RAGEngine:
             },
         ]
 
+        last_error = ""
         for attempt in (1, 2):
             try:
                 resp = self.groq_client.chat.completions.create(
@@ -617,14 +672,23 @@ class RAGEngine:
                 # and read as an incoherent answer.
                 content = (getattr(msg, "content", None) or "").strip()
                 if content:
+                    self.last_llm_error = ""
                     return content
-                if self.verbose:
-                    print("  [generate] empty content on attempt "
-                          f"{attempt}; falling back")
+                last_error = ("model returned empty content "
+                              f"(finish_reason={getattr(resp.choices[0], 'finish_reason', '?')}, "
+                              f"model={config.GROQ_MODEL})")
+                logger.warning("attempt %d: %s", attempt, last_error)
             except Exception as exc:  # noqa: BLE001
-                if self.verbose:
-                    print(f"  [generate] attempt {attempt} failed: "
-                          f"{type(exc).__name__}: {exc}")
+                last_error = _describe_llm_error(exc)
+                # Always logged, not just under `verbose`. The UI runs with
+                # verbose off, so gating this on verbose is what let a spent
+                # daily token quota present as an anonymous "unavailable".
+                logger.warning("attempt %d/%d failed: %s",
+                               attempt, 2, last_error, exc_info=True)
+        self.last_llm_error = last_error
+        if last_error:
+            logger.error("generation failed after 2 attempts; falling back to "
+                         "the extractive quote. Cause: %s", last_error)
         return ""
 
     def answer(self, question: str, top_k: int = config.TOP_K) -> Answer:
@@ -691,9 +755,15 @@ class RAGEngine:
         else:
             # NFR-5: no key, or the call failed. Quote the source verbatim -
             # that is a factual answer, not a degraded one.
-            text = _finalise(_extractive(hits[0], as_of), as_of)
-            sources = _sources_from_hits(hits[:1])
+            #
+            # The reason is passed through because the two cases are different
+            # claims. Saying "no language model is configured" when one IS
+            # configured and simply failed is false, and it read as a
+            # contradiction alongside the UI's own "unavailable" warning.
             fallback_reason = "no_key" if self.groq_client is None else "llm_error"
+            text = _finalise(
+                _extractive(hits[0], as_of, fallback_reason), as_of)
+            sources = _sources_from_hits(hits[:1])
 
         return Answer(
             text=text,
@@ -702,6 +772,8 @@ class RAGEngine:
             chunks_used=len(hits),
             mode="extractive" if not raw else "generated",
             fallback_reason=fallback_reason,
+            llm_error_detail=(self.last_llm_error if fallback_reason == "llm_error"
+                              else ""),
             hits=list(hits),
         )
 
@@ -848,16 +920,22 @@ def _finalise(text: str, as_of: str) -> str:
     return f"{body}\n\n{_as_of_line(as_of)}"
 
 
-def _extractive(hit: Hit, as_of: str) -> str:
+def _extractive(hit: Hit, as_of: str, reason: str = "no_key") -> str:
     """Quote the source chunk verbatim when generation is unavailable (NFR-5).
 
     Quoted rather than paraphrased on purpose: with no LLM there is nothing to
     reword it, and a verbatim quote is maximally faithful. The opening clause
     makes the quoting explicit so the user is not misled about the provenance.
+
+    ``reason`` distinguishes the two causes, because only one of them is a
+    missing model. Saying "no language model is configured" when one is
+    configured and the call simply failed is a false statement about the system.
     """
+    cause = ("since no language model is configured" if reason == "no_key"
+             else "because the language model could not be reached")
     return (
-        "Quoted directly from the source page, since no language model is "
-        f"configured: \"{hit.text.strip()}\""
+        f"Quoted directly from the source page, {cause}: "
+        f"\"{hit.text.strip()}\""
     )
 
 

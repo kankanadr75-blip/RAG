@@ -110,15 +110,25 @@ def render_answer(answer) -> None:
 
     if answer.mode == "extractive":
         # Distinguish "you have not configured a key" from "the API call failed".
-        # The second is a real fault - a rate limit, most often - and labelling
-        # it as a missing key would hide it.
+        # The second is a real fault and labelling it as a missing key would
+        # hide it. The warning then shows the Groq response itself rather than
+        # guessing at "rate limit or network error" - that phrase cannot
+        # separate an exhausted daily token quota from a rejected key, and the
+        # two need completely different fixes.
         if answer.fallback_reason == "llm_error":
+            detail = (answer.llm_error_detail or "").strip()
             st.warning(
-                "The language model was unavailable (rate limit or network "
-                "error), so this answer is quoted verbatim from the source "
-                "page. No figure has been generated or inferred.",
+                "The language model could not be reached, so this answer is "
+                "quoted verbatim from the source page. No figure has been "
+                "generated or inferred.",
                 icon="⚠️",
             )
+            if detail:
+                # The Groq response itself: status, error code, and the actual
+                # message (quota figures, reset time, or an auth error).
+                st.code(detail, language=None)
+            else:
+                st.caption("No detail available - check the service logs.")
         else:
             st.caption(
                 "Quoted verbatim from the source page — no language model "
