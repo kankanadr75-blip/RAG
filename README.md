@@ -117,6 +117,23 @@ python ingest.py --reembed    # drop and rebuild the vector store
 The first run downloads `all-MiniLM-L6-v2` (~90 MB) and takes a few minutes on
 CPU. Pages are cached in `data/raw/`, so later runs are offline.
 
+**The index is committed**, so you do not normally need to run this at all —
+`data/chroma/chroma.sqlite3` (~5 MB of portable SQLite) is in the repo and the
+app opens it directly. Only the `hnsw/` binaries beside it are ignored; those
+are a rebuildable cache and Chroma regenerates them on first query.
+
+You must re-run `python ingest.py --reembed` after editing **either** `ingest.py`
+**or** `data/raw/*.html`. Both are hashed into a fingerprint stored on the
+collection, and `_index_ready()` compares it at every app start — a mismatch is
+treated as "no index" and rebuilt, so the app can never quietly answer from
+chunks that no longer match the sources. `tests/test_acceptance.py` asserts the
+fingerprint matches, which is what stops the rebuild from being forgotten.
+
+Only `chroma.sqlite3` is tracked, because SQLite is portable and the HNSW
+binaries are not. That was verified rather than assumed: deleting every
+non-SQLite file from a copy of the index and then querying it returns correct
+hits, with Chroma rebuilding the HNSW structure from the vectors in SQLite.
+
 ### Run it
 
 ```powershell
@@ -185,12 +202,14 @@ exception.
 the build. The build command installs `2.14.0+cpu` first; `requirements.txt` then
 sees the pin satisfied and skips the CUDA wheel.
 
-**The vector DB is rebuilt during every build.** `data/chroma/` is gitignored, so
-the build runs `python ingest.py --reembed`. Ingestion reads the cached pages in
-`data/raw/` rather than re-scraping Groww, so the build cannot break because the
-site blocked us, and the corpus is reproducible. Ingestion also aborts with a
-non-zero exit if any target fact goes missing, so a corrupt build fails loudly
-rather than deploying an empty index.
+**The build does not build the vector DB.** The index is committed, so a deploy
+starts from a working index rather than an empty one. The build still installs
+CPU `torch` and still runs `ingest.py --reembed` as a verification step: it is
+idempotent, it re-checks the corpus against the sources, and it aborts with a
+non-zero exit if any target fact has gone missing, so a broken corpus fails the
+build loudly instead of shipping. Remove it from `render.yaml` if you would
+rather have a faster build — the committed index makes it unnecessary, and the
+fingerprint guard would catch a stale one at runtime either way.
 
 `PYTHON_VERSION` is pinned to 3.13.5 in both `.python-version` and the blueprint,
 because Render's default Python is not the version this was verified against.
@@ -201,11 +220,16 @@ Also supported, and unlike the Render Free tier its memory budget is not a
 problem — the documented ceiling is **2.7 GB** against a measured 563 MB peak.
 
 There is **no build command** on Community Cloud, which is the one real
-difference from Render. `data/chroma/` is gitignored, so there is no index to
-open. `app.py` therefore builds it on first run: `_index_ready()` checks for a
-non-empty collection and calls `ingest.main([])` if there is none. It reads the
-committed pages in `data/raw/`, so it needs no network for the corpus — only the
-one-time embedding-model download. On Render that branch never runs.
+difference from Render and is why the index is committed: with nothing to build
+with, a git-ignored index would force a full model download and re-embed on
+every cold start, and would greet the first visitor with a build message.
+
+`app.py::_index_ready()` now validates the committed index instead of merely
+checking it exists — non-empty, and its stored fingerprint must equal
+`config.corpus_fingerprint()` (a hash of `data/raw/*.html` + `ingest.py`). It
+costs ~23 ms warm. Only if that fails does `get_engine()` fall back to
+`ingest.main([])`, which reads the committed pages in `data/raw/` and so needs
+no network for the corpus — only the one-time embedding-model download.
 
 Set the key in **Advanced settings → Secrets** as a single line:
 
@@ -466,7 +490,7 @@ app.py           Streamlit UI (no answer logic of its own)
 tests/           AT-1..AT-12 acceptance suite
 scripts/         verification, calibration, and the sample-Q&A capture
 data/raw/        cached source HTML — the system of record
-data/chroma/     vector store (git-ignored, rebuilt by ingest.py)
+data/chroma/     vector store — chroma.sqlite3 is committed; hnsw/ is not
 deliverables/    architecture, chunking, implementation log, sources, Q&A
 ```
 

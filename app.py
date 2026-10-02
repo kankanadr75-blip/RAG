@@ -50,17 +50,31 @@ REFUSAL_HEADINGS = {
 
 
 def _index_ready() -> bool:
-    """True when a non-empty vector collection is already on disk.
+    """True when a current vector collection is already on disk.
 
-    ``data/chroma/`` is git-ignored, so a fresh clone has no index. Render
-    builds one during its build step; Streamlit Community Cloud has no build
-    command at all, so something has to do it at runtime.
+    ``data/chroma/chroma.sqlite3`` is committed, so a fresh clone - Render,
+    Community Cloud, or a new laptop - already has the index and starts
+    instantly. Only Chroma's SQLite file is tracked: it holds the vectors and
+    is portable, while the ``hnsw``/ binary files beside it are a rebuildable
+    cache that Chroma regenerates on first query (verified by deleting them and
+    re-querying). Committing those would mean committing machine-specific
+    binaries for no benefit.
+
+    The fingerprint check is what stops that from turning into a stale-answer
+    trap. A collection whose fingerprint no longer matches the current sources
+    or the current ``ingest.py`` is treated as absent, so the corpus is rebuilt
+    instead of quietly answering from chunks that no longer match the pages.
+    Hashing ~5 MB of HTML plus this file is a few milliseconds.
     """
     try:
         import chromadb
 
         client = chromadb.PersistentClient(path=str(config.CHROMA_DIR))
-        return client.get_collection(config.COLLECTION_NAME).count() > 0
+        collection = client.get_collection(config.COLLECTION_NAME)
+        if collection.count() == 0:
+            return False
+        stored = (collection.metadata or {}).get("corpus_fingerprint")
+        return stored == config.corpus_fingerprint()
     except Exception:  # noqa: BLE001 - absent collection, or chroma not up yet
         return False
 
@@ -74,18 +88,20 @@ def get_engine() -> RAGEngine:
     ``cache_data``) is correct because the engine holds a model and a Chroma
     client - mutable, non-serialisable objects.
 
-    The ingestion call is the Community Cloud path. It is a no-op on Render,
-    where the blueprint already ran ``ingest.py --reembed`` during the build,
-    and a no-op on every run after the first because the container keeps
-    ``data/chroma/`` between sessions. It reads the cached pages in
-    ``data/raw/``, which ARE committed, so it needs no network to build the
-    corpus - only the one-time embedding-model download.
+    Ingestion is a fallback, not the normal path. The committed
+    ``data/chroma/chroma.sqlite3`` means there is normally nothing to build,
+    which matters most on Streamlit Community Cloud: it has no build command,
+    so a runtime build cost every cold start a model download plus a full
+    re-embed, and put a scary message in front of the first visitor. The build
+    below now runs only when the index is missing or its fingerprint shows it no
+    longer matches the sources.
     """
     if not _index_ready():
         import ingest
 
-        st.info("No vector index found - building it from the cached source "
-                "pages. This happens once; later visits start instantly.")
+        st.info("No current vector index found - building it from the cached "
+                "source pages. This is the fallback path and should normally "
+                "not be reached.")
         if ingest.main([]) != 0:
             raise RuntimeError(
                 "Ingestion failed, so there is nothing to answer from. See the "

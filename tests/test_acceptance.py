@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -626,3 +627,62 @@ def test_client_construction_failure_is_not_reported_as_a_missing_key():
         groq.Groq = saved_groq
         config.GROQ_API_KEY = saved
         importlib.reload(sys.modules["rag"])
+
+
+def test_committed_vector_index_is_present_and_current():
+    """The committed sqlite index must exist and match the current corpus.
+
+    ``data/chroma/chroma.sqlite3`` is committed so a fresh clone - Render,
+    Community Cloud, a reviewer's laptop - starts instantly instead of
+    downloading the embedding model and re-embedding 130 chunks on first run.
+    The risk that creates is a STALE index, which fails silently: it keeps
+    answering, from chunks that no longer match the sources. So the index
+    carries a fingerprint of the sources plus ``ingest.py``, and this asserts
+    the two agree.
+    """
+    import chromadb
+
+    index_file = Path(config.CHROMA_DIR) / "chroma.sqlite3"
+    assert index_file.exists(), (
+        f"{index_file} is not committed; a fresh clone would have to build the "
+        f"index at runtime")
+
+    client = chromadb.PersistentClient(path=str(config.CHROMA_DIR))
+    collection = client.get_collection(config.COLLECTION_NAME)
+
+    assert collection.count() > 0, "committed index is empty"
+    assert collection.count() == 130, (
+        f"committed index holds {collection.count()} chunks, expected 130")
+
+    stored = (collection.metadata or {}).get("corpus_fingerprint")
+    assert stored, "committed index carries no corpus fingerprint"
+    assert stored == config.corpus_fingerprint(), (
+        f"committed index is STALE: built from fingerprint {stored}, but the "
+        f"sources and ingest.py now hash to {config.corpus_fingerprint()}. "
+        f"Re-run: python ingest.py --reembed")
+
+
+def test_stale_index_is_detected_so_it_gets_rebuilt(monkeypatch):
+    """A fingerprint mismatch must force a rebuild, not a silent wrong answer."""
+    import app
+
+    assert app._index_ready() is True, "precondition: committed index is current"
+
+    monkeypatch.setattr(config, "corpus_fingerprint", lambda: "0000deadbeef0000")
+    assert app._index_ready() is False, (
+        "a mismatched fingerprint was accepted; the app would answer from a "
+        "stale index without any warning")
+
+
+def test_only_the_portable_sqlite_file_is_committed():
+    """The HNSW binaries must stay out of git; Chroma rebuilds them itself.
+
+    Verified by deleting every non-sqlite file from a copy of the index and
+    querying: Chroma regenerates the HNSW structure from the vectors held in
+    sqlite. Committing them would add machine-specific binaries for nothing.
+    """
+    tracked = subprocess.run(
+        ["git", "ls-files", "data/chroma"],
+        capture_output=True, text=True, cwd=ROOT, check=True).stdout.split()
+    assert tracked == ["data/chroma/chroma.sqlite3"], (
+        f"unexpected tracked files under data/chroma: {tracked}")

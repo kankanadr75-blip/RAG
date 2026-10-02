@@ -1209,6 +1209,19 @@ def embed_and_store(chunks: list[Chunk]) -> None:
     )
     before = collection.count()
 
+    # Stamp the corpus fingerprint onto the collection so a deployed app can
+    # tell a current index from a stale one without re-embedding anything.
+    # `hnsw:space` is deliberately NOT repeated here: Chroma raises
+    # "Changing the distance function of a collection once it is created is not
+    # supported" if modify() carries that key, even with the identical value.
+    # It is already recorded at creation and modify() merges the rest.
+    fingerprint = config.corpus_fingerprint()
+    collection.modify(metadata={
+        "corpus_fingerprint": fingerprint,
+        "embed_model": config.EMBED_MODEL,
+        "embed_dim": config.EMBED_DIM,
+    })
+
     collection.upsert(
         ids=[c.chunk_id for c in chunks],
         documents=[c.text for c in chunks],
@@ -1230,6 +1243,9 @@ def embed_and_store(chunks: list[Chunk]) -> None:
     else:
         print(f"  [OK] embedding dim = {dim}")
     print(f"  [OK] persisted to {config.CHROMA_DIR}")
+    print(f"  [OK] corpus fingerprint {fingerprint} "
+          f"(sources + ingest.py, hashed)")
+
 
 
 # ---------------------------------------------------------------------------

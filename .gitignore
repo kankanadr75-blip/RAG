@@ -19,8 +19,17 @@ venv/
 .mypy_cache/
 .ruff_cache/
 
-# --- Vector DB: regenerable binary, rebuilt by `python ingest.py` ---
-data/chroma/
+# --- Vector DB ------------------------------------------------------------
+# data/chroma/chroma.sqlite3 IS committed, deliberately. It holds the 130 chunk
+# vectors in portable SQLite (~5 MB) so a fresh clone starts instantly instead
+# of downloading the embedding model and re-embedding on first run. That matters
+# most on Streamlit Community Cloud, which has no build command.
+#
+# The rest of data/chroma/ is NOT: those are Chroma's HNSW index binaries, a
+# rebuildable cache that Chroma regenerates from the SQLite vectors on first
+# query. Committing them would add machine-specific binaries for no benefit.
+data/chroma/*
+!data/chroma/chroma.sqlite3
 
 # --- Resume cache for scripts/capture_sample_qa.py ---
 # Holds already-captured answers so a rate-limited capture can resume instead

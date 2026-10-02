@@ -7,6 +7,7 @@ parameters).
 
 from __future__ import annotations
 
+import hashlib
 import os
 from pathlib import Path
 
@@ -313,3 +314,31 @@ EDUCATIONAL_LINKS = [
         "url": "https://www.sebi.gov.in/legal/mutual-funds",
     },
 ]
+
+
+def corpus_fingerprint() -> str:
+    """Hash of everything that determines the corpus, as 16 hex chars.
+
+    The vector index is committed to the repo, so it has to be possible to tell
+    a CURRENT index from a STALE one. A stale index is not a crash, it is worse:
+    it answers confidently from chunks that no longer match the source pages,
+    and nothing anywhere reports an error.
+
+    Two inputs are hashed. ``data/raw/*.html`` covers the sources themselves.
+    ``ingest.py`` covers the extraction and chunking rules, so editing a chunk
+    rule invalidates the index even though the HTML is untouched - which is
+    exactly the case that would otherwise go unnoticed.
+
+    This lives in ``config.py`` rather than ``ingest.py`` on purpose: the app
+    calls it on every start to validate the committed index, and importing
+    ``ingest`` there would pull in BeautifulSoup and requests just to hash a
+    file. Reading ~5 MB of HTML plus one source file takes a few milliseconds.
+    """
+    digest = hashlib.sha256()
+    digest.update(b"corpus-v1\n")
+    ingest_source = Path(__file__).resolve().parent / "ingest.py"
+    digest.update(ingest_source.read_bytes())
+    for page in sorted(RAW_DIR.glob("*.html")):
+        digest.update(page.name.encode("utf-8"))
+        digest.update(page.read_bytes())
+    return digest.hexdigest()[:16]
