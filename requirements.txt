@@ -29,16 +29,43 @@
 --find-links https://download.pytorch.org/whl/cpu/torch/
 
 # --- Ingestion -------------------------------------------------------------
+# lxml is pinned in the "Python 3.14 wheels" section below.
 beautifulsoup4==4.12.3
-lxml==5.3.0
 requests==2.32.3
 
 # --- Embeddings + vector store --------------------------------------------
 sentence-transformers==6.1.0
 torch==2.14.0+cpu
 chromadb==1.5.9
-numpy==2.1.3
-pydantic==2.10.3
+# numpy and pydantic are pinned in the "Python 3.14 wheels" section below.
+
+# --- Python 3.14 wheels ----------------------------------------------------
+# Three pins below have no cp314 wheel, so on Python 3.14 they can only be
+# installed by building from source - and each of those builds needs a toolchain
+# the deploy host does not have:
+#
+#   numpy 2.1.3        needs a Fortran compiler
+#   pydantic-core      needs a Rust compiler (pulled in by pydantic)
+#   lxml 5.3.0         needs libxml2/libxslt headers
+#
+# That is the classic Community Cloud dependency failure:
+#
+#   ERROR: Could not build wheels for numpy, which is required to install
+#   pyproject.toml-based projects
+#
+# Every other pin, and torch, already publish cp312/cp313/cp314 wheels. These
+# three are pure transitive dependencies - no module in app.py, rag.py,
+# ingest.py, config.py or guardrails.py imports numpy, pydantic or lxml
+# directly - so relaxing them cannot change this application's behaviour.
+#
+# The markers keep the EXACT tested versions on 3.12 and 3.13, and only relax
+# on 3.14 where the pinned version simply does not exist. Nothing else moves.
+lxml==5.3.0 ; python_version < "3.14"
+lxml>=5.3.0 ; python_version >= "3.14"
+numpy==2.1.3 ; python_version < "3.14"
+numpy>=2.1.3 ; python_version >= "3.14"
+pydantic==2.10.3 ; python_version < "3.14"
+pydantic>=2.10.3 ; python_version >= "3.14"
 
 # --- Generation (LLM) -----------------------------------------------------
 groq==1.7.0

@@ -217,7 +217,23 @@ Community Cloud injects root-level secrets into the environment, so
 `config.py`'s `os.getenv("GROQ_API_KEY")` reads it with no code change.
 
 Pick **3.13** in the Python version dropdown. Community Cloud ignores
-`.python-version` and defaults to 3.12.
+`.python-version`, so the dropdown is the only thing that sets it.
+
+> **Set this before the first deploy.** It is not cosmetic. Community Cloud's
+> install image carries no compiler, so any dependency that can only be
+> installed from a source tarball fails the whole deploy. `numpy==2.1.3`,
+> `pydantic==2.10.3` and `lxml==5.3.0` publish no `cp314` wheel, and their
+> source builds need Fortran, Rust and `libxml2` headers respectively. The
+> error is:
+>
+> ```
+> ERROR: Could not build wheels for numpy, which is required to install
+> pyproject.toml-based projects
+> ```
+>
+> `requirements.txt` now carries environment markers so 3.14 also installs
+> cleanly, but **3.13 is still the version to choose** — it keeps the exact
+> versions the 39-test suite was validated against.
 
 `.streamlit/config.toml` sits at the repository root because Community Cloud
 recognises exactly one, there.
