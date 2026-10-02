@@ -35,13 +35,18 @@ services:
       - key: GROQ_API_KEY
         sync: false
 
+      # Must be explicit: Render's default Python is not the version this was
+      # verified against.
       - key: PYTHON_VERSION
         value: "3.13.5"
 
-      # Mirrors config.py defaults; pinned here so a change to the code default
-      # cannot silently alter what is deployed.
-      - key: GROQ_MODEL
-        value: qwen/qwen3.8-27b
-
-      - key: GROQ_MAX_TOKENS
-        value: "1024"
+      # GROQ_MODEL and GROQ_MAX_TOKENS are deliberately NOT set here.
+      #
+      # config.py owns both, via os.getenv with a fallback, so the code is the
+      # single source of truth: changing the model in config.py changes the
+      # deployed service on the next build. Pinning them here as well would
+      # create a second place to update and a way for the two to silently
+      # disagree - the blueprint would quietly override the code.
+      #
+      # To override a model WITHOUT a code change, set the variable in the
+      # Render dashboard instead; it takes precedence over both.
