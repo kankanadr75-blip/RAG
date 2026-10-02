@@ -1172,3 +1172,97 @@ audit the corpus. It re-extracts from `data/raw/`, applies exclusions and
 scrubbing, writes both dumps, and fails loudly if any of the 35 coverage cells
 is empty — so a page-markup change that silently thins the corpus surfaces as a
 non-zero exit rather than a plausible-looking short answer at query time.
+
+---
+
+## 17. Build log - Phases 8-11 (generation, UI, acceptance, deliverables)
+
+### 17.1 `TOP_K` 5 → 10, and what had to be re-verified
+
+Raising the context to 10 chunks widens recall: several target facts have one
+near-identical instance per scheme, so a scheme-qualified question and the wrong
+scheme's card can sit close in rank. The risk was **context dilution** — with all
+five schemes' `expense_ratio` cards in one window (1.21 / 1.03 / 0.77 / 0.78 /
+0.78), reading the wrong card is a live hazard. `scripts/check_context_dilution.py`
+now asserts that each of the five resolves to its own figure *and* cites its own
+page, and that no advice language appears. Suite: 12/12, then 13/13.
+
+The similarity floor was **not** re-derived, and that is a deliberate result
+rather than an omission: top-1 similarity does not depend on how many candidates
+are returned, so `TOP_K` cannot move the calibrated gap. `scripts/calibrate_floor.py`
+was re-run to confirm — identical separation (in-domain min 0.660, off-topic max
+0.421).
+
+### 17.2 Bug: the extractive fallback was mislabelling a fault as a configuration state
+
+While capturing the sample Q&A, every answer came back prefixed *"Quoted directly
+from the source page, since no language model is configured."* The key **was**
+configured. Groq's free tier allows 200k tokens/day, a full verification run
+consumes most of it, and the 429 was being absorbed silently by the fallback.
+
+This is the worst kind of bug for this project: it degrades to something that
+still *looks* correct. NFR-5 behaved exactly as designed — the answers were
+verbatim quotes of true facts — but "no language model configured" is a benign
+explanation for what was actually a rate limit, and a reviewer would have
+believed it.
+
+Fixed by distinguishing the two cases in `Answer.fallback_reason`
+(`"no_key"` vs `"llm_error"`), with the UI rendering an explicit warning for the
+second. `scripts/capture_sample_qa.py` now **refuses to publish** a table if any
+row fell back to extractive while a key was present, so a rate-limited run can
+never be mistaken for a representative one.
+
+### 17.3 Bug: four citations where the spec requires one
+
+`_sources_from_hits` emitted a citation for *every* retrieved hit. At `TOP_K=5`
+that was mostly harmless; at `TOP_K=10` a single answer cited **all four
+applicable scheme pages**. That asserts every page supports the answer, which is
+false — for "exit load of HDFC Flexi Cap" only Flexi Cap's page states it — and
+it dilutes the one citation the whole design exists to guarantee.
+
+The UI had already anticipated this and rendered extras as plain text, so the
+*rendered* rule was intact and the data model was the thing that was wrong. Made
+explicit: `Answer.citation` and `Answer.citation_links` (never more than one) are
+now the only citation surface, and `tests/test_acceptance.py` asserts
+`len(citation_links) == 1` plus that the cited page is the right scheme.
+
+### 17.4 Two acceptance tests were wrong, not the corpus
+
+AT-12 failed on first run. Both causes were the tests, not the data:
+
+- `\b\d{9,18}\b` (account-number heuristic) matched `content_hash=2169311853` —
+  this tool's own hash in the dump header. The scan now reads chunk **text**
+  fields, which is exactly what can reach the LLM.
+- `\breturns?\b` matched *"NIFTY 100 **Total Return** Index"* (the benchmark's
+  actual name, and a required fact for AT-5), the statutory tax slab (*"returns
+  are taxed at 20%"*), and the dump's own "EXCLUSIONS BY DESIGN" header.
+
+Rewritten to assert the guarantee that actually matters — no return **figure** and
+no ranking claim — plus positive assertions that the two legitimate uses are
+still present, so the tightened test can never be mistaken for a silent gap.
+
+### 17.5 Groq's daily quota is a real operational constraint
+
+200k tokens/day on the free tier; a 10-chunk answer costs ~1.6k, so roughly 120
+questions/day. A full `verify_all.py` run plus the pytest suite consumes a large
+share of it. Two consequences worth recording:
+
+- `scripts/capture_sample_qa.py` persists each row to `data/sample_qa_cache.json`
+  as it completes, so a capture interrupted by a 429 **resumes** rather than
+  re-spending tokens on answers already obtained.
+- Verification and day-to-day use compete for one budget. Carried into the README
+  Known Limits.
+
+### 17.6 Generated deliverables, not hand-written
+
+`deliverables/sources.csv` and `sources.md` are produced by
+`scripts/build_sources.py` from `config.SOURCES` plus the ingested corpus, and
+`deliverables/sample_qa.md` is transcribed from `scripts/capture_sample_qa.py`.
+A published source list that can drift from what the system actually uses is a
+defect, so both are regenerated rather than written.
+
+`config.AMC_NAME`, `AMC_SHORT` and `SUPPORTED_PLAN` were added as single points of
+truth, and `DISCLAIMER_SHORT` now holds the exact phrase required on the welcome
+screen (`Facts-only. No investment advice.`), with `app.py` rendering the long
+form beneath it as a caption. Both live in `config.py` so the UI, the CLI and the
+system prompt cannot disagree.

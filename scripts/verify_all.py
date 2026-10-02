@@ -1,7 +1,11 @@
-"""Run the full Phase 0-4 verification suite in one go.
+"""Run the full verification suite in one go.
 
 Run:  $env:PYTHONIOENCODING='utf-8'; python scripts/verify_all.py
 Exits non-zero if any phase fails.
+
+Covers the build phases (0-9), the retrieval tuning checks, and the AT-1..AT-12
+acceptance suite in tests/. `python -m pytest tests/ -q` is a faster entry point
+when you only need the acceptance criteria.
 """
 
 import re
@@ -86,13 +90,32 @@ def audit_dumps() -> bool:
     return ok
 
 
+def run_pytest() -> bool:
+    """AT-1..AT-12 acceptance suite (tests/test_acceptance.py)."""
+    print(f"\n{'=' * 78}\nAcceptance suite - AT-1..AT-12 (pytest)\n{'=' * 78}")
+    proc = subprocess.run(
+        [sys.executable, "-m", "pytest", "tests/", "-q", "--no-header", "-p",
+         "no:cacheprovider"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    print((proc.stdout or "").strip())
+    if proc.returncode != 0:
+        print(proc.stderr or "")
+    return proc.returncode == 0
+
+
 def main() -> int:
     results: list[tuple[str, bool]] = []
     for label, script in PHASES:
         results.append((label, run(label, script)))
     results.append(("Corpus audit", audit_dumps()))
+    results.append(("Acceptance suite (AT-1..AT-12)", run_pytest()))
 
-    print(f"\n{'=' * 78}\nSUMMARY - Phases 0 to 4\n{'=' * 78}")
+    print(f"\n{'=' * 78}\nSUMMARY\n{'=' * 78}")
     for label, passed in results:
         print(f"  [{'PASS' if passed else 'FAIL'}] {label}")
     failed = [l for l, p in results if not p]

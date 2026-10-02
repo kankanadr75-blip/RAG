@@ -106,13 +106,24 @@ if not ok:
 
 import config  # noqa: E402
 
-ok = config.DISCLAIMER[:40] in warnings
-print(f"  [{'OK' if ok else 'FAIL'}] warning carries config.DISCLAIMER")
+# The warning carries the SHORT form (the phrase the brief requires); the long
+# form is rendered as a caption beneath it. Both must appear on the screen.
+ok = config.DISCLAIMER_SHORT in warnings
+print(f"  [{'OK' if ok else 'FAIL'}] warning carries "
+      f"config.DISCLAIMER_SHORT")
 if not ok:
-    failures.append("disclaimer warning does not use config.DISCLAIMER")
+    failures.append(
+        "disclaimer warning does not use config.DISCLAIMER_SHORT"
+    )
+
+captions = "\n".join(c.value for c in at.caption)
+ok = config.DISCLAIMER[:40] in captions
+print(f"  [{'OK' if ok else 'FAIL'}] long-form disclaimer shown as a caption")
+if not ok:
+    failures.append("config.DISCLAIMER is not rendered anywhere on the page")
 
 # The brief's literal phrasing must be present too.
-ok = "No investment advice" in warnings
+ok = "No investment advice" in warnings or "No investment advice" in captions
 print(f"  [{'OK' if ok else 'FAIL'}] 'No investment advice' visible")
 if not ok:
     failures.append("'No investment advice' missing from the disclaimer")

@@ -16,6 +16,11 @@ venv/
 # --- Vector DB: regenerable binary, rebuilt by `python ingest.py` ---
 data/chroma/
 
+# --- Resume cache for scripts/capture_sample_qa.py ---
+# Holds already-captured answers so a rate-limited capture can resume instead
+# of re-spending tokens. The committed artefact is deliverables/sample_qa.md.
+data/sample_qa_cache.json
+
 # NOTE: data/raw/ and data/chunks.txt are intentionally NOT ignored.
 # They are the audit trail that lets a reviewer inspect the corpus
 # without re-running ingestion. Keep them tracked.

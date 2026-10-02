@@ -30,6 +30,13 @@ for _d in (DATA_DIR, RAW_DIR, CHROMA_DIR):
 # --------------------------------------------------------------------------
 # Source registry  (AMC: HDFC Mutual Fund | 5 schemes, all Direct Growth)
 # --------------------------------------------------------------------------
+AMC_NAME = "HDFC Mutual Fund"
+AMC_SHORT = "HDFC"
+# The corpus is deliberately single-AMC. Retrieval cannot tell a lookalike fund
+# apart from an in-scope one (see OUT_OF_SCOPE_SCHEMES), so widening the AMC
+# without widening the guard is how you get confidently wrong answers.
+SUPPORTED_PLAN = "Direct Growth"
+
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
@@ -160,6 +167,15 @@ GROQ_MAX_TOKENS = int(os.getenv("GROQ_MAX_TOKENS", "1024"))
 # --------------------------------------------------------------------------
 # Answer policy
 # --------------------------------------------------------------------------
+# DISCLAIMER
+#
+# Two forms on purpose. SHORT is the prominent note required on the welcome
+# screen and beside every answer; LONG is the fuller statement shown once at the
+# top of the app and appended to the system prompt. Both live here so the UI,
+# the CLI and the prompt can never disagree about what the assistant promises.
+# --------------------------------------------------------------------------
+DISCLAIMER_SHORT = "Facts-only. No investment advice."
+
 DISCLAIMER = (
     "Facts-only. No investment advice. Answers are sourced from public "
     "Groww scheme pages and may be incomplete - always verify with the "

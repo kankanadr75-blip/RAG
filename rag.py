@@ -166,6 +166,11 @@ class Answer:
     as_of: str = ""
     chunks_used: int = 0
     mode: str = "refusal"
+    # Why the extractive fallback fired: "" (generated fine), "no_key" (no API
+    # key configured) or "llm_error" (key present but the call failed, e.g. a
+    # rate limit). The UI must not claim "no language model configured" for the
+    # third case - that hides a real fault behind a benign-sounding label.
+    fallback_reason: str = ""
     # Retained for the UI's "Sources used" transparency panel. Never rendered
     # as answer text - only chunk ids, sections and scores.
     hits: list["Hit"] = field(default_factory=list)
@@ -174,6 +179,28 @@ class Answer:
     def primary_source(self) -> SourceRef | None:
         """The single citation the UI should show first."""
         return self.sources[0] if self.sources else None
+
+    @property
+    def citation(self) -> SourceRef | None:
+        """The ONE authoritative citation for this answer (REQ-15).
+
+        ``sources`` lists every distinct scheme page that was retrieved as
+        context, which at TOP_K=10 can be all five. Only ``sources[0]`` - the
+        page of the top-ranked hit - is rendered as a link; the rest appear in
+        the "Sources used" panel as plain text.
+
+        Citing all of them would assert that every page supports the answer,
+        which we cannot prove and which is usually false: for "exit load of HDFC
+        Flexi Cap" only Flexi Cap's page states it. One link is the honest claim,
+        and it is the rule the UI already enforced.
+        """
+        return self.sources[0] if self.sources else None
+
+    @property
+    def citation_links(self) -> list[SourceRef]:
+        """Exactly the links an answer may render. Never more than one."""
+        primary = self.citation
+        return [primary] if primary is not None else []
 
     def to_dict(self) -> dict:
         return {
@@ -189,6 +216,7 @@ class Answer:
             "as_of": self.as_of,
             "chunks_used": self.chunks_used,
             "mode": self.mode,
+            "fallback_reason": self.fallback_reason,
         }
 
 
@@ -659,11 +687,13 @@ class RAGEngine:
 
         if raw:
             text = _finalise(raw, as_of)
+            fallback_reason = ""
         else:
             # NFR-5: no key, or the call failed. Quote the source verbatim -
             # that is a factual answer, not a degraded one.
             text = _finalise(_extractive(hits[0], as_of), as_of)
             sources = _sources_from_hits(hits[:1])
+            fallback_reason = "no_key" if self.groq_client is None else "llm_error"
 
         return Answer(
             text=text,
@@ -671,6 +701,7 @@ class RAGEngine:
             as_of=as_of,
             chunks_used=len(hits),
             mode="extractive" if not raw else "generated",
+            fallback_reason=fallback_reason,
             hits=list(hits),
         )
 

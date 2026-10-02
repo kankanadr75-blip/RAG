@@ -109,7 +109,21 @@ def render_answer(answer) -> None:
         st.markdown(f"**Source:** [{primary.title}]({primary.url})")
 
     if answer.mode == "extractive":
-        st.caption("Quoted from the source page — no language model configured.")
+        # Distinguish "you have not configured a key" from "the API call failed".
+        # The second is a real fault - a rate limit, most often - and labelling
+        # it as a missing key would hide it.
+        if answer.fallback_reason == "llm_error":
+            st.warning(
+                "The language model was unavailable (rate limit or network "
+                "error), so this answer is quoted verbatim from the source "
+                "page. No figure has been generated or inferred.",
+                icon="⚠️",
+            )
+        else:
+            st.caption(
+                "Quoted verbatim from the source page — no language model "
+                "configured. Set GROQ_API_KEY in .env for paraphrased answers."
+            )
 
     if answer.hits:
         with st.expander(f"Sources used ({len(answer.hits)} chunks)"):
@@ -150,8 +164,10 @@ def main() -> None:
         "recommendations."
     )
 
-    # REQ-23: prominent and persistent, above the fold and above the input.
-    st.warning(config.DISCLAIMER, icon="⚠️")
+    # REQ-23: the short form, prominent and persistent, above the fold and
+    # above the input. Single source of truth - config.DISCLAIMER_SHORT.
+    st.warning(config.DISCLAIMER_SHORT, icon="⚠️")
+    st.caption(config.DISCLAIMER)
 
     render_sidebar()
 
