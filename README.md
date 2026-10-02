@@ -151,11 +151,18 @@ Render will prompt once for `GROQ_API_KEY`, which is never committed
 Three things in it are load-bearing and easy to get wrong if you configure this
 by hand instead:
 
-**Instance type must be Standard (2 GB), not Free or Starter.** Both cheaper
-tiers are 512 MB RAM and this app measures **544 MB peak** with torch, chromadb,
-streamlit and the embedding model loaded. The model is built lazily on the *first
-query*, so on a 512 MB tier the service starts, looks healthy, and is then
-OOM-killed when the first user asks something — the worst failure mode available.
+**Instance type is currently set to Free (512 MB), which is over budget.**
+Measured peak working set is **563 MB** — torch, chromadb, streamlit and the
+embedding model together. Thread and arena tuning was tried and made no material
+difference (563 MB → 562 MB); the bulk is model weights and the torch runtime, not
+per-thread arenas, so it cannot be tuned away. Switch the blueprint to
+`plan: standard` (2 GB) before deploying anything you care about.
+
+The failure mode on Free is worth knowing, because it does not look like a bug:
+the embedding model is built lazily on the *first query*, so the service boots,
+health-checks fine, renders the Streamlit UI — and is then OOM-killed when
+someone first asks a question. Check the logs for a **killed process**, not an
+exception.
 
 **`torch` must be installed from the CPU index.** The default Linux wheel for
 `torch==2.14.0` declares `nvidia-cudnn`, `nvidia-nccl`, `nvidia-cusparselt`,

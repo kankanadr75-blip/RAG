@@ -2,12 +2,26 @@ services:
   - type: web
     name: hdfc-rag
     runtime: python
-    # NOT free/starter: both are 512 MB RAM and this app measures 544 MB peak
-    # with torch + chromadb + streamlit + the MiniLM model loaded. The embedding
-    # model is lazily constructed on the FIRST query, so on a 512 MB tier the
-    # service starts fine and is then OOM-killed when a user first asks
-    # something. Standard (2 GB) is the minimum that works.
-    plan: standard
+
+    # Free tier: 512 MB RAM, 0.5 CPU, spins down after ~15 min idle.
+    #
+    # HONEST WARNING: this is over budget. Measured peak working set is
+    # 563 MB (torch + chromadb + streamlit + the MiniLM model loaded, two
+    # real encodes). The memory levers in envVars were measured and made no
+    # material difference - capping OMP_NUM_THREADS from 6 to 1 moved peak
+    # from 563 MB to 562 MB. The bulk is model weights and the torch runtime,
+    # not thread arenas, so arena/thread tuning cannot rescue this.
+    #
+    # Expected failure mode if it does not fit: the embedding model is built
+    # lazily on the FIRST query, so the service boots, health-checks fine,
+    # serves the Streamlit UI, and is then OOM-killed the moment a real user
+    # asks something. Check the logs for a killed process rather than an
+    # exception - it will not look like a code error.
+    #
+    # If that happens, change this one line to `plan: standard` (2 GB). That
+    # is the known-good setting. Switch before deploying for anything you care
+    # about; keep free only to evaluate the UI.
+    plan: free
     region: singapore
 
     # torch must come from the CPU index. The default Linux wheel for
@@ -39,6 +53,24 @@ services:
       # verified against.
       - key: PYTHON_VERSION
         value: "3.13.5"
+
+      # --- runtime tuning ---------------------------------------------------
+      # These are CPU levers, NOT memory levers. Capping the thread pools at 1
+      # matches the 0.5 vCPU the free tier actually provides: a single-request
+      # FAQ bot spawning six OpenMP threads just adds contention. Measured
+      # effect on memory: 563 MB -> 562 MB, i.e. none, so do not expect these
+      # to make the free tier viable.
+      - key: OMP_NUM_THREADS
+        value: "1"
+      - key: MKL_NUM_THREADS
+        value: "1"
+
+      # Stops the HuggingFace tokenizer from spawning a thread pool that is
+      # never joined, and silences HF telemetry writes.
+      - key: TOKENIZERS_PARALLELISM
+        value: "false"
+      - key: HF_HUB_DISABLE_TELEMETRY
+        value: "1"
 
       # GROQ_MODEL and GROQ_MAX_TOKENS are deliberately NOT set here.
       #
