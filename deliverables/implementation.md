@@ -1156,14 +1156,84 @@ needed the rescue, and the per-candidate filter — which compared the raw
 substring against non-normalised chunk text — silently failed on exactly that
 case.
 
-### 16.4 Known limitation, deliberately not tuned around
+### 16.4 Ambiguous query, reclassified — and a wrong "benign" verdict corrected
 
-`"scheme code"` retrieves `investment_objective` rather than `scheme_identity`.
-The correct chunk scores 0.244, below `MIN_SIMILARITY_LOWER` (0.30), so the
-rescue falls back to the next candidate. Lowering the rescue floor to 0.24 would
-admit this one query while widening the gate for *every* query, and the failure is
-benign — the returned chunk is still a true, on-topic fact about the scheme,
-just not the specific field asked for. Carried into the README Known Limits.
+**Original claim (both parts wrong).** `"scheme code"` retrieves
+`investment_objective` rather than `scheme_identity`. The correct chunk scores
+0.244, below `MIN_SIMILARITY_LOWER` (0.30), so the rescue falls back to the next
+candidate. The failure is "benign — the returned chunk is still a true, on-topic
+fact about the scheme, just not the specific field asked for."
+
+**What measurement actually shows.** The stress script was re-run with per-candidate
+tracing, and both claims fail:
+
+1. *The rescue "never sees" the correct chunk* — false. `_lexical_grounding` is
+   called with the text of **all** below-floor candidates (`rag.py:516-518`), so
+   it does see `scheme_identity`, and that is exactly what set `grounded=True`:
+   `"scheme code"` is a registered domain term and occurs verbatim in
+   `"Groww scheme code: 119060"`. The chunk is discarded later, by
+   `if s < MIN_SIMILARITY_LOWER: continue` at `rag.py:525-526`. The classifier
+   identified the right chunk and was overruled by the score floor. **The
+   classifier was the only component that behaved correctly.**
+
+2. *The failure is "benign"* — false. End to end the user receives:
+
+   > The provided source excerpts do not state the scheme code for either the
+   > HDFC Flexi Cap Fund or the HDFC ELSS Tax Saver Fund.
+
+   with a citation to `hdfc-equity-fund` — a scheme the user never mentioned. That
+   is a non-answer behind a misleading citation, not "a true, on-topic fact".
+   (Credit where due: the model did **not** fabricate a code, which is the
+   behaviour that actually mattered.)
+
+**And no threshold can fix it.** All five `scheme_identity` chunks score:
+
+| scheme | score | code |
+|---|---|---|
+| Flexi Cap | 0.162 | 118955 |
+| Balanced Advantage | 0.164 | 118968 |
+| Small Cap | 0.173 | 130503 |
+| Large Cap | 0.187 | 119018 |
+| ELSS | 0.244 | 119060 |
+
+Every one is below 0.30, and the spread is embedding noise rather than signal —
+the cards are structurally identical and dominated by ISINs, dates and
+"Direct plan, Growth option", which embed poorly against a two-token query.
+`all-MiniLM-L6-v2` scores the query *lowest* against the card that literally
+contains "Groww scheme code". Lowering the rescue floor to 0.24 would admit ELSS
+and return 119060 for a question that named no scheme — trading a non-answer for
+a **confident error**. The existing behaviour is the safer one.
+
+**Resolution.** The query is under-specified, not mis-retrieved. It is now
+declared `Case("scheme code", ambiguous=True, why=...)` in the stress table:
+reported, never scored, and never printed as a failure. The real fix is a
+scope-clarification affordance ("which scheme?"), which is a product change
+rather than a threshold and is deliberately not built.
+
+### 16.5 The stress script could print FAIL and exit 0
+
+Worth recording as a process defect, because it hid the above.
+
+`stress_terse_queries.py` printed a red `[FAIL]` line for `"scheme code"` and
+then exited **0**, because `sys.exit(1)` fired only on `misses` (nothing
+retrieved) while a wrong-section result landed in `fails`, which was printed as a
+"KNOWN LIMITATION" footnote. Above that footnote it printed
+`VERDICT: floor 0.54 answers every terse query tested`. So `verify_all.py`
+reported `13/13 passed` while the transcript contained a visible failure — text
+honest, exit code dishonest, and the exit code is the only channel a CI system
+reads.
+
+Fixed by giving each case an explicit expectation kind:
+
+- `expect={...}` — one right section; anything else is a real defect, **fails the run**
+- `any_hit=True` — must retrieve something, section not assertable
+- `ambiguous=True` — no single right answer; reported, never scored, and `why` is
+  mandatory so the justification lives next to the case and cannot drift
+
+Both fatal branches were then proven by injecting a regression into a patched copy
+and confirming exit 1: a wrong-section case (`"expense ratio"` asserted against
+`portfolio_turnover`) and a rejected-entirely case (`"quantum entanglement"`).
+The rule now enforced: **a suite that prints FAIL must exit non-zero.**
 
 ### 15.4 Invariant worth keeping
 

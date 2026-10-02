@@ -231,12 +231,24 @@ bleed by `scripts/check_context_dilution.py`.
    Plan's; 10 Dec 1999 is the scheme's. They are kept separate and labelled
    rather than reconciled.
 
-5. **`"scheme code"` retrieves the wrong field.** Asking for a scheme code
-   returns the `investment_objective` chunk (0.316) rather than
-   `scheme_identity` (0.244), which sits below the 0.30 rescue gate. The answer
-   is still a true fact about the scheme, just not the requested field. Not
-   tuned around deliberately — the alternatives either admit off-topic queries
-   or require hand-written routing.
+5. **A bare `"scheme code"` cannot be answered.** The query names no scheme, and
+   the corpus holds five `scheme_identity` chunks with five different codes
+   (119018 / 118955 / 119060 / 130503 / 118968). All five score 0.162–0.244,
+   below the 0.30 rescue gate, so **no threshold admits the right one** — the
+   top scorer wins by embedding noise. The user gets a non-answer plus a
+   citation to an arbitrarily chosen scheme. Admitting a chunk would return
+   119060 (ELSS) for a general question, trading a non-answer for a *confident
+   error*, so the current behaviour is the safer one. The fix is a
+   scope-clarification affordance ("which scheme?"), which is a product change,
+   not a threshold — deliberately not built. The model does correctly decline to
+   invent a figure.
+
+   Note: the lexical classifier is **not** at fault. `"scheme code"` is a
+   registered domain term and matches verbatim in the `scheme_identity` chunk,
+   so `_lexical_grounding` identifies the right chunk and is then overruled by
+   the score floor. An earlier version of this note claimed the rescue "never
+   sees" the correct chunk and that the failure was "benign"; both were wrong
+   and are corrected in `implementation.md` §16.4.
 
 6. **AMC-level AUM is dropped.** The About prose repeats HDFC AMC's total AUM
    (₹9,86,237 Cr) on every one of the five pages. It is removed structurally so

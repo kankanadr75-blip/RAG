@@ -60,7 +60,25 @@ def run(label: str, script: str) -> bool:
     print(proc.stdout or "")
     if proc.returncode != 0:
         print(proc.stderr or "")
-    return proc.returncode == 0
+    ok = proc.returncode == 0
+
+    # Trust the transcript, not just the exit code.
+    #
+    # stress_terse_queries.py once printed a red [FAIL] for "scheme code" and
+    # still exited 0, so this suite reported 13/13 passed directly over a visible
+    # failure. The exit code is not a reliable summary of what a sub-suite
+    # printed, and the exit code is the only channel an automated run reads - so
+    # a [FAIL] in the output is treated as a failure in its own right, whatever
+    # the sub-suite claims.
+    printed = len(re.findall(r"\[FAIL\]", proc.stdout or ""))
+    if printed and ok:
+        print(f"\n  !! {script} printed {printed} [FAIL] line(s) but exited 0.")
+        print("     Treated as FAILED. A sub-suite that reports a failure must not")
+        print("     also report success - fix its exit code, or the assertion if")
+        print("     it is genuinely by-design (use an explicit marker, not [FAIL]).")
+        ok = False
+
+    return ok
 
 
 def audit_dumps() -> bool:
