@@ -1,0 +1,47 @@
+services:
+  - type: web
+    name: hdfc-rag
+    runtime: python
+    # NOT free/starter: both are 512 MB RAM and this app measures 544 MB peak
+    # with torch + chromadb + streamlit + the MiniLM model loaded. The embedding
+    # model is lazily constructed on the FIRST query, so on a 512 MB tier the
+    # service starts fine and is then OOM-killed when a user first asks
+    # something. Standard (2 GB) is the minimum that works.
+    plan: standard
+    region: singapore
+
+    # torch must come from the CPU index. The default Linux wheel for
+    # torch==2.14.0 declares nvidia-cudnn/nccl/cusparselt/nvshmem + triton,
+    # which is several GB of CUDA on a CPU-only host and fails the build.
+    # Installing 2.14.0+cpu first means `pip install -r requirements.txt` finds
+    # the pin already satisfied and skips the CUDA wheel.
+    buildCommand: >-
+      pip install --upgrade pip &&
+      pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu &&
+      pip install -r requirements.txt &&
+      python ingest.py --reembed
+
+    # --server.port $PORT and --server.address 0.0.0.0 are both required;
+    # without them Streamlit binds localhost:8501 and Render cannot route to it.
+    startCommand: >-
+      streamlit run app.py
+      --server.address 0.0.0.0
+      --server.port $PORT
+      --server.headless true
+      --browser.gatherUsageStats false
+
+    envVars:
+      # Set on first deploy - never committed. Render will prompt.
+      - key: GROQ_API_KEY
+        sync: false
+
+      - key: PYTHON_VERSION
+        value: "3.13.5"
+
+      # Mirrors config.py defaults; pinned here so a change to the code default
+      # cannot silently alter what is deployed.
+      - key: GROQ_MODEL
+        value: qwen/qwen3.8-27b
+
+      - key: GROQ_MAX_TOKENS
+        value: "1024"

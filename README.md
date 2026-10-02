@@ -141,6 +141,40 @@ python -m pytest tests/ -q       # just the AT-1..AT-12 acceptance suite
 
 ---
 
+## Deploying
+
+`render.yaml` is a Render blueprint, so the whole service is version-controlled
+rather than living in dashboard settings. Connect the repo as a **Blueprint** and
+Render will prompt once for `GROQ_API_KEY`, which is never committed
+(`sync: false`).
+
+Three things in it are load-bearing and easy to get wrong if you configure this
+by hand instead:
+
+**Instance type must be Standard (2 GB), not Free or Starter.** Both cheaper
+tiers are 512 MB RAM and this app measures **544 MB peak** with torch, chromadb,
+streamlit and the embedding model loaded. The model is built lazily on the *first
+query*, so on a 512 MB tier the service starts, looks healthy, and is then
+OOM-killed when the first user asks something — the worst failure mode available.
+
+**`torch` must be installed from the CPU index.** The default Linux wheel for
+`torch==2.14.0` declares `nvidia-cudnn`, `nvidia-nccl`, `nvidia-cusparselt`,
+`nvidia-nvshmem` and `triton` — several GB of CUDA on a CPU-only host, which fails
+the build. The build command installs `2.14.0+cpu` first; `requirements.txt` then
+sees the pin satisfied and skips the CUDA wheel.
+
+**The vector DB is rebuilt during every build.** `data/chroma/` is gitignored, so
+the build runs `python ingest.py --reembed`. Ingestion reads the cached pages in
+`data/raw/` rather than re-scraping Groww, so the build cannot break because the
+site blocked us, and the corpus is reproducible. Ingestion also aborts with a
+non-zero exit if any target fact goes missing, so a corrupt build fails loudly
+rather than deploying an empty index.
+
+`PYTHON_VERSION` is pinned to 3.13.5 in both `.python-version` and the blueprint,
+because Render's default Python is not the version this was verified against.
+
+---
+
 ## Architecture
 
 - [`deliverables/architecture.md`](deliverables/architecture.md) — layers,
