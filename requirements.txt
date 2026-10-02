@@ -4,17 +4,29 @@
 # --- CPU-only torch --------------------------------------------------------
 # The default Linux wheel for torch 2.14.0 pulls in nvidia-cudnn / nccl /
 # cusparselt / nvshmem + triton - several GB of CUDA on a host with no GPU,
-# which either fails the install or blows the deploy's memory budget.
+# which either fails the install or exhausts the deploy's disk/time budget.
 #
-# The `+cpu` local-version build exists ONLY on the PyTorch CPU index, so this
-# pin forces the CPU wheel while `--extra-index-url` keeps PyPI reachable for
-# every other dependency below. `--extra-index-url` rather than `--index-url`
-# deliberately: the latter would replace PyPI wholesale and break all of these.
+# `--find-links`, NOT `--extra-index-url`. An earlier version of this file used
+# `--extra-index-url https://download.pytorch.org/whl/cpu` and it broke the whole
+# install on Streamlit Community Cloud, which resolves requirements with uv.
+# uv refuses to fall back to a later index for a package it already found on an
+# earlier one (dependency-confusion protection), and that PyTorch URL serves a
+# `requests` listing - so the resolver locked onto it and then failed with:
+#
+#   Because there is no version of requests==2.32.3 and you require
+#   requests==2.32.3, we can conclude that your requirements are unsatisfiable.
+#
+# `--find-links` declares a flat list of WHEELS rather than an index, so it
+# never claims ownership of a package name. Only `torch` is found there; every
+# other dependency still resolves from PyPI as normal.
+#
+# Scoped to the `torch/` subdirectory because the wheels live one level down,
+# not at the root of the CPU wheel directory.
 #
 # On Render the blueprint installs `torch==2.14.0` from the CPU index first.
 # That satisfies this pin too - `==2.14.0` matches `2.14.0+cpu` under PEP 440 -
 # so the CUDA wheel is still skipped there and the build is unaffected.
---extra-index-url https://download.pytorch.org/whl/cpu
+--find-links https://download.pytorch.org/whl/cpu/torch/
 
 # --- Ingestion -------------------------------------------------------------
 beautifulsoup4==4.12.3

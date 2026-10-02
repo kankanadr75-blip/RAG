@@ -222,6 +222,28 @@ Pick **3.13** in the Python version dropdown. Community Cloud ignores
 `.streamlit/config.toml` sits at the repository root because Community Cloud
 recognises exactly one, there.
 
+**One dependency trap specific to this platform.** Community Cloud resolves
+`requirements.txt` with **uv**, not pip, and uv will not fall back to a later
+index for a package it already found on an earlier one — its defence against
+dependency confusion. So the obvious way to get the CPU torch wheel,
+
+```ini
+--extra-index-url https://download.pytorch.org/whl/cpu
+```
+
+fails the *entire* install, because that URL also serves a `requests` listing:
+
+```
+Because there is no version of requests==2.32.3 and you require
+requests==2.32.3, we can conclude that your requirements are unsatisfiable.
+```
+
+`requirements.txt` uses `--find-links https://download.pytorch.org/whl/cpu/torch/`
+instead. `--find-links` declares a flat list of wheels rather than an index, so
+it never claims a package name and everything else still resolves from PyPI.
+Verified with `uv pip compile` against Linux for both Python 3.12 and 3.13:
+123 packages, `torch==2.14.0+cpu`, and no `nvidia-*` or `triton` entries.
+
 ### Vercel will not work
 
 Not a configuration problem — Vercel cannot run a Streamlit server. Its Python
