@@ -577,3 +577,52 @@ def test_nfr5_construction_without_key_does_not_raise():
     finally:
         config.GROQ_API_KEY = saved
         importlib.reload(sys.modules["rag"])
+
+
+def test_client_construction_failure_is_not_reported_as_a_missing_key():
+    """A key that is present but fails to build must not read as "no key".
+
+    Regression: ``answer()`` used ``"no_key" if self.groq_client is None``.
+    ``groq_client`` is also None when ``Groq(...)`` itself raises, so a broken
+    key was announced as "no language model is configured" - telling the user
+    to set a key they had already set, and discarding the real error.
+    """
+    import importlib
+
+    import groq
+
+    saved = config.GROQ_API_KEY
+    saved_groq = groq.Groq
+    try:
+        config.GROQ_API_KEY = "gsk_present_but_unusable"
+
+        def _boom(*_args, **_kwargs):
+            raise RuntimeError("simulated Groq client construction failure")
+
+        groq.Groq = _boom
+        importlib.reload(sys.modules["rag"])
+        engine = sys.modules["rag"].RAGEngine()
+
+        # The key WAS found...
+        assert engine.key_present is True, "key presence was not recorded"
+        # ...but the client did not build.
+        assert engine.groq_client is None
+        assert engine.has_llm is False
+        # And the real cause was captured rather than lost.
+        assert "simulated Groq client construction failure" in engine.last_llm_error
+
+        answer = engine.answer(
+            "What is the expense ratio of HDFC ELSS Tax Saver Fund?")
+
+        assert answer.fallback_reason == "llm_error", (
+            f"reason was {answer.fallback_reason!r}; a present key must never "
+            f"be reported as a missing one")
+        assert "no language model is configured" not in answer.text
+        assert "could not be reached" in answer.text
+        # The detail must reach the UI, not just the log.
+        assert "simulated Groq client construction failure" in (
+            answer.llm_error_detail or "")
+    finally:
+        groq.Groq = saved_groq
+        config.GROQ_API_KEY = saved
+        importlib.reload(sys.modules["rag"])

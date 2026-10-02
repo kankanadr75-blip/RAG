@@ -109,10 +109,25 @@ def render_sidebar() -> None:
         engine = get_engine()
         if engine.has_llm:
             st.caption(f"Model: `{config.GROQ_MODEL}`")
+        elif engine.key_present:
+            # A key IS set, so this is not a configuration problem - the client
+            # failed to build. Say that, and show why, instead of telling the
+            # user to set a key they already set.
+            st.warning(
+                "A `GROQ_API_KEY` is set but the Groq client could not be "
+                "created, so answers are quoted verbatim from the source. See "
+                "the service logs for the underlying error.",
+                icon="⚠️",
+            )
+            if engine.last_llm_error:
+                st.code(engine.last_llm_error, language=None)
         else:
             st.warning(
                 "No `GROQ_API_KEY` set — answers are quoted verbatim from the "
-                "source rather than paraphrased.",
+                "source rather than paraphrased. Add it in this app's "
+                "**Settings → Secrets** as a single line, "
+                '`GROQ_API_KEY = "gsk_..."` (no section header), or in `.env` '
+                "when running locally.",
                 icon="⚠️",
             )
 
@@ -164,8 +179,12 @@ def render_answer(answer) -> None:
                 st.caption("No detail available - check the service logs.")
         else:
             st.caption(
-                "Quoted verbatim from the source page — no language model "
-                "configured. Set GROQ_API_KEY in .env for paraphrased answers."
+                "Quoted verbatim from the source page — no `GROQ_API_KEY` was "
+                "found in the environment, so there is nothing to paraphrase "
+                "with. On Streamlit Community Cloud add it under "
+                "**Settings → Secrets** as `GROQ_API_KEY = \"gsk_...\"` at the "
+                "top level (not nested under a `[section]` header, or it will "
+                "not be injected as an environment variable)."
             )
 
     if answer.hits:

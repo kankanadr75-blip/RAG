@@ -449,6 +449,10 @@ class RAGEngine:
         self.last_llm_error = ""
 
         key = (config.GROQ_API_KEY or "").strip()
+        # Whether a key was PRESENT is tracked separately from whether the
+        # client object got built. The two differ when Groq(...) itself raises,
+        # and answer() needs the difference in order to name the true cause.
+        self.key_present = bool(key)
         self.has_llm = bool(key)
         if self.has_llm:
             try:
@@ -846,7 +850,12 @@ class RAGEngine:
             # claims. Saying "no language model is configured" when one IS
             # configured and simply failed is false, and it read as a
             # contradiction alongside the UI's own "unavailable" warning.
-            fallback_reason = "no_key" if self.groq_client is None else "llm_error"
+            # "no_key" must mean the key is ABSENT - not merely that no client
+            # object exists. When Groq(...) raises, groq_client stays None with
+            # a key present, and calling that "no_key" tells the user to set a
+            # key they have already set, while discarding the real error that
+            # last_llm_error already captured.
+            fallback_reason = "no_key" if not self.key_present else "llm_error"
             text = _finalise(
                 _extractive(hits[0], as_of, fallback_reason), as_of)
             sources = _sources_from_hits(hits[:1])
