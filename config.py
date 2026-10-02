@@ -155,13 +155,37 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 #   openai/gpt-oss-120b, openai/gpt-oss-20b, openai/gpt-oss-safeguard-20b,
 #   qwen/qwen3.8-27b, whisper-large-v3, whisper-large-v3-turbo
 # Override in .env if your account differs.
+#
+# WHY THIS ONE. qwen/qwen3.8-27b was chosen by measurement, not preference
+# (scripts/compare_models.py, same SYSTEM_PROMPT over the same retrieved
+# context):
+#
+#   model                  figures   invisible chars   completion tokens
+#   qwen/qwen3.8-27b        5/5       none                    53
+#   openai/gpt-oss-20b      3/5       U+202F in 4/5         548
+#   openai/gpt-oss-120b     3/5       U+202F in 3/5         540
+#
+# The gpt-oss "misses" are not wrong facts - they are U+202F NARROW NO-BREAK
+# SPACE emitted instead of a normal space, so "BSE 250" arrives as
+# "BSE<NBSP>250<NBSP>SmallCap" and "3 years" as "3<NBSP>years". The answers are
+# correct and the text renders with odd gaps. `_strip_disallowed` now normalises
+# those characters so a model swap cannot silently break a substring assertion.
+#
+# qwen is also ~10x cheaper on completion tokens because the gpt-oss models bill
+# their reasoning scratchpad to the same output budget. That matters: the free
+# tier is 200k tokens/day and a reasoning model would spend ~10x of it per
+# answer.
+#
+# REASONING MODELS. qwen/qwen3.8-27b is itself reasoning-capable but was verified
+# to return content-only responses here (no `reasoning` / `reasoning_content`
+# keys) at temperature 0. gpt-oss models DO emit `reasoning`, which must never
+# reach the user - `rag.py` reads `content` only and ignores reasoning fields
+# defensively, so a reasoning model is safe but wasteful here.
 GROQ_MODEL = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
 
-# qwen/qwen3.8-27b is a reasoning-capable model. It was verified to return
-# content-only responses here (no `reasoning` / `reasoning_content` keys) at
-# temperature 0, so no special handling is needed - but `rag.py` must still read
-# reasoning fields defensively if the model or a future variant starts
-# emitting them, or the reasoning text would be shown to the user as the answer.
+# Output budget. Only the final answer is wanted, so this is deliberately small.
+# A reasoning model can exhaust it before emitting any content and fall back to
+# the extractive path; verified not to happen with the default model.
 GROQ_MAX_TOKENS = int(os.getenv("GROQ_MAX_TOKENS", "1024"))
 
 # --------------------------------------------------------------------------

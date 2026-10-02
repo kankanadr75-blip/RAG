@@ -467,6 +467,60 @@ def test_at12c_corpus_has_no_advice_language(corpus: list[dict]):
 
 
 # ---------------------------------------------------------------------------
+# AT-11 (cont): answer text is model-independent
+# ---------------------------------------------------------------------------
+INVISIBLE = [
+    ("\u202f", "narrow no-break space"),
+    ("\u00a0", "no-break space"),
+    ("\u2009", "thin space"),
+    ("\u200b", "zero-width space"),
+]
+
+
+def test_at11d_invisible_unicode_is_normalised():
+    """No invisible or confusable character survives into answer text.
+
+    Measured, not hypothetical: Groq's openai/gpt-oss-20b and -120b emit U+202F
+    narrow no-break space where a normal space belongs, so "BSE 250" arrives as
+    "BSE<NBSP>250<NBSP>SmallCap" and "3 years" as "3<NBSP>years". The fact is
+    correct, the text is corrupted, and AT-5's `assert "BSE 250" in text` then
+    fails on a right answer. Normalising makes the output identical whichever
+    model served it, which is what keeps substring assertions meaningful.
+    """
+    from rag import _strip_disallowed
+
+    dirty = (
+        "The benchmark is BSE\u202f250\u202fSmallCap Total Return Index. "
+        "The lock\u2011in period is 3\u202fyears and the expense ratio is "
+        "1.21\u202f%. As of July\u00a01st, 2020. It\u2019s the \u201cTRI\u201d."
+    )
+    clean = _strip_disallowed(dirty)
+
+    for char, label in INVISIBLE:
+        assert char not in clean, f"{label} survived normalisation"
+
+    # The specific strings the acceptance criteria assert on.
+    assert "BSE 250 SmallCap" in clean
+    assert "3 years" in clean
+    assert "lock-in" in clean
+    assert "1.21" in clean
+    assert "July 1st, 2020" in clean
+
+
+def test_at11e_answers_contain_no_invisible_characters(engine: RAGEngine):
+    """The same invariant end to end, against the live model."""
+    for question in ANSWERABLE:
+        answer = engine.answer(question)
+        if answer.refused:
+            continue
+        for char, label in INVISIBLE:
+            assert char not in answer.text, (
+                f"{question!r} answer contains a {label}: "
+                f"{answer.text!r}"
+            )
+
+
+# ---------------------------------------------------------------------------
 # Scope guard - not in the AT table but a correctness invariant
 # ---------------------------------------------------------------------------
 @pytest.mark.parametrize("question,foreign", [

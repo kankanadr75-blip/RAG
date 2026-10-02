@@ -69,6 +69,27 @@ GROQ_MODEL=qwen/qwen3.8-27b      # optional, this is the default
 Get a key at <https://console.groq.com/keys> (free tier: 200k tokens/day —
 enough for a few hundred questions, see [Known limits](#known-limits)).
 
+**On the model.** `qwen/qwen3.8-27b` is the default because it was chosen by
+measurement (`scripts/compare_models.py`, same prompt over the same context):
+
+| model | figures stated | invisible chars | completion tokens |
+|---|---|---|---|
+| **`qwen/qwen3.8-27b`** | **5/5** | **none** | **53** |
+| `openai/gpt-oss-20b` | 3/5 | U+202F in 4/5 | 548 |
+| `openai/gpt-oss-120b` | 3/5 | U+202F in 3/5 | 540 |
+
+The gpt-oss misses are **not wrong facts** — both models emit U+202F narrow
+no-break space instead of a normal space, so `BSE 250` arrives as
+`BSE<NBSP>250<NBSP>SmallCap`. The answer is correct but the text no longer
+contains the string, which breaks substring assertions and renders with odd
+gaps. They also cost ~10x the completion tokens, because a reasoning model's
+scratchpad is billed to the same output budget. Answer text is normalised either
+way, so swapping the model cannot corrupt output.
+
+Groq's daily limit is **per model**, so exhausting `qwen` does not block
+`gpt-oss`. Override in `.env` if your account serves a different subset —
+`config.py` records the verified list.
+
 ### Build the index (once)
 
 ```powershell

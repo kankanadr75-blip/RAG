@@ -1266,3 +1266,64 @@ truth, and `DISCLAIMER_SHORT` now holds the exact phrase required on the welcome
 screen (`Facts-only. No investment advice.`), with `app.py` rendering the long
 form beneath it as a caption. Both live in `config.py` so the UI, the CLI and the
 system prompt cannot disagree.
+
+---
+
+## 18. Model selection - chosen by measurement
+
+A replacement `GROQ_API_KEY` was supplied alongside `GROQ_MODEL=openai/gpt-oss-20b`.
+The key returned **401 Invalid API Key** and the previous working key was
+restored. Worth recording that the two failures here look identical from the UI
+and mean opposite things: a 401 means the *credential* is bad, a 429 means the
+*quota* is spent. `fallback_reason` distinguishes the fallback cases but not
+these two, so the verbose log is the place to read the difference.
+
+That prompted a real comparison rather than accepting the requested model.
+`scripts/compare_models.py` runs the production `SYSTEM_PROMPT` over identical
+retrieved context for each candidate:
+
+| model | figures stated | invisible chars | completion tokens |
+|---|---|---|---|
+| **`qwen/qwen3.8-27b`** | **5/5** | **none** | **53** |
+| `openai/gpt-oss-20b` | 3/5 | U+202F in 4/5 | 548 |
+| `openai/gpt-oss-120b` | 3/5 | U+202F in 3/5 | 540 |
+
+**The gpt-oss "misses" are not wrong facts.** `scripts/inspect_model_answers.py`
+shows why: both models emit **U+202F NARROW NO-BREAK SPACE** where a normal space
+belongs, so the benchmark arrives as `BSE<NBSP>250<NBSP>SmallCap` and the lock-in
+as `3<NBSP>years`. The facts are right; the *characters* are corrupted. That
+matters concretely — AT-5 asserts `"BSE 250" in answer.text`, so a correct answer
+fails the suite, and the character renders as a visible gap.
+
+### Decision: `qwen/qwen3.8-27b`
+
+1. **Clean output.** No invisible-character corruption, so substring assertions
+   mean what they say.
+2. **~10x cheaper.** The gpt-oss models bill their reasoning scratchpad to the
+   same output budget — 548 completion tokens against 53. Against a 200k
+   tokens/day free tier that is the difference between ~120 and ~1,200 answers
+   per day.
+3. **No reasoning tokens wasted.** Verified content-only at temperature 0.
+4. **Already proven**: 13/13 suites pass on it.
+
+`openai/gpt-oss-120b` over `20b` only on tie-break — same issues, marginally
+fewer affected answers, no advantage worth the extra latency.
+
+### Hardening, so a model swap cannot break correctness
+
+`_strip_disallowed` now normalises U+202F, U+00A0, U+2009, U+2007, U+200B,
+non-breaking and figure hyphens, and typographic quotes, before the markdown and
+URL stripping. Answer text is therefore identical whichever model served it.
+Asserted by `test_at11d` (unit) and `test_at11e` (end to end, live).
+
+This is not gold-plating: Groq's daily token limit is **per model**, so running
+out on `qwen` does not block `gpt-oss`, and swapping models under quota pressure
+is a reasonable thing for anyone running this. It should not be able to produce a
+wrong-looking answer while doing so.
+
+### Also confirmed
+
+- Groq returns content in `content` and scratchpad in `reasoning`. `rag.py` reads
+  `content` only, so a reasoning model can never leak its thinking to the user.
+- `groq-api-key` is account-scoped, and the model list is account-scoped too —
+  `config.SOURCES`'s comment records the verified served list for this account.

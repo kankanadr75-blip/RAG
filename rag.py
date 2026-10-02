@@ -790,7 +790,27 @@ def _strip_disallowed(text: str) -> str:
     Defensive, not trusting. Even a well-behaved model occasionally emits a
     link, and a stray URL in the body would be a citation the application never
     validated.
+
+    Also normalises invisible Unicode. Measured, not hypothetical: Groq's
+    ``openai/gpt-oss-20b`` and ``-120b`` emit U+202F NARROW NO-BREAK SPACE where
+    a normal space belongs, producing "BSE<NBSP>250<NBSP>SmallCap" and
+    "3<NBSP>years". The answers are factually correct but the text no longer
+    contains "BSE 250", so AT-5 fails on a correct answer - and the character
+    renders as a gap in most viewers. Normalising here means the answer text is
+    the same regardless of which model produced it, which is what lets the
+    acceptance suite assert on substrings at all.
     """
+    # Invisible / confusable whitespace -> plain ASCII space.
+    for exotic in ("\u202f", "\u00a0", "\u2009", "\u2007", "\u200b"):
+        text = text.replace(exotic, " ")
+    # Non-breaking and figure hyphens -> ASCII hyphen, so "lock-in" is one word.
+    for dash in ("\u2011", "\u2010", "\u2012", "\u2013"):
+        text = text.replace(dash, "-")
+    # Typographic quotes and primes that can appear inside a quoted figure.
+    for quote in ("\u2018", "\u2019", "\u201c", "\u201d"):
+        text = text.replace(quote, "'")
+    text = text.replace("\u2032", "'").replace("\u2033", '"')
+
     text = re.sub(r"https?://\S+", "", text)
     text = re.sub(r"\[(\d+)\]", "", text)          # citation markers like [1]
     # Bold BEFORE bullets: "**Expense ratio**" starts with "*", and the bullet
