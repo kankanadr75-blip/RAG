@@ -231,14 +231,36 @@ costs ~23 ms warm. Only if that fails does `get_engine()` fall back to
 `ingest.main([])`, which reads the committed pages in `data/raw/` and so needs
 no network for the corpus — only the one-time embedding-model download.
 
-Set the key in **Advanced settings → Secrets** as a single line:
+Set the key in **Settings → Secrets**, then **Save** and **Reboot** — a running
+app does not pick up a newly added secret.
 
 ```toml
 GROQ_API_KEY = "gsk_..."
 ```
 
-Community Cloud injects root-level secrets into the environment, so
-`config.py`'s `os.getenv("GROQ_API_KEY")` reads it with no code change.
+**Both shapes work.** Streamlit exports *only root-level* secrets to the
+environment, so a key under a section header would normally be invisible to
+`os.getenv` — while looking perfectly correct in the dashboard. That is a
+genuinely miserable failure to debug, so `app.py::_resolve_groq_key()` reads
+the environment first and then falls back to `st.secrets`, checking the root and
+every section:
+
+```toml
+# works
+GROQ_API_KEY = "gsk_..."
+
+# also works - found under the section, no code change
+[groq]
+GROQ_API_KEY = "gsk_..."
+```
+
+`config.py` deliberately stays environment-only, because `rag.py` and
+`ingest.py` are also run as a headless CLI with no Streamlit dependency. The
+UI resolves the key and passes it to `RAGEngine(api_key=...)`.
+
+If no key is found the sidebar says *which* of the two likely mistakes it is —
+secrets present but none named `GROQ_API_KEY`, versus nothing set at all —
+because the symptom is identical and the fixes differ.
 
 Pick **3.13** in the Python version dropdown. Community Cloud ignores
 `.python-version`, so the dropdown is the only thing that sets it.

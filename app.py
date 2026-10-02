@@ -17,6 +17,7 @@ input, and the in-scope scheme panel sits in the sidebar.
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -107,7 +108,58 @@ def get_engine() -> RAGEngine:
                 "Ingestion failed, so there is nothing to answer from. See the "
                 "logs above for the coverage gaps that caused it."
             )
-    return RAGEngine()
+    key, key_source = _resolve_groq_key()
+    # Only pass a key when one was actually FOUND. Passing "" would be read as
+    # "deliberately no key" by RAGEngine and would mask config.GROQ_API_KEY,
+    # which is how the local .env and the tests supply one.
+    return RAGEngine(api_key=key) if key_source else RAGEngine()
+
+
+def _resolve_groq_key() -> tuple[str, str]:
+    """Find the Groq key wherever Streamlit can still see it.
+
+    Returns ``(key, source)``, with ``source`` naming where it came from so the
+    sidebar can tell the user what to look at. ``("", "")`` means not found.
+
+    Why this is not just ``os.getenv("GROQ_API_KEY")``: Streamlit exposes ONLY
+    root-level secrets as environment variables. A key pasted as
+
+        [groq]
+        GROQ_API_KEY = "gsk_..."
+
+    is perfectly valid, appears correctly in the dashboard, is readable through
+    ``st.secrets`` - and is completely invisible to ``os.environ``. That
+    combination produces an app that reports "no key set" while looking
+    correctly configured to whoever deployed it, which is a miserable thing to
+    debug. So the sectioned case is resolved too rather than merely warned
+    about.
+
+    ``st.secrets`` raises when no secrets file exists at all, which is the
+    normal local state, so every access is guarded.
+    """
+    key = (os.getenv("GROQ_API_KEY") or "").strip()
+    if key:
+        return key, "the `GROQ_API_KEY` environment variable"
+
+    try:
+        secrets = st.secrets
+        top_level = (secrets.get("GROQ_API_KEY") or "").strip()
+    except Exception:  # noqa: BLE001 - no secrets file present
+        return "", ""
+    if top_level:
+        return top_level, "the `GROQ_API_KEY` secret"
+
+    try:
+        for section in secrets:
+            try:
+                inside = (secrets[section].get("GROQ_API_KEY") or "").strip()
+            except Exception:  # noqa: BLE001 - scalar entry, not a section
+                continue
+            if inside:
+                return inside, f"the `GROQ_API_KEY` secret inside `[{section}]`"
+    except Exception:  # noqa: BLE001 - unusual secrets layout
+        pass
+    return "", ""
 
 
 def render_sidebar() -> None:
@@ -138,14 +190,45 @@ def render_sidebar() -> None:
             if engine.last_llm_error:
                 st.code(engine.last_llm_error, language=None)
         else:
-            st.warning(
-                "No `GROQ_API_KEY` set — answers are quoted verbatim from the "
-                "source rather than paraphrased. Add it in this app's "
-                "**Settings → Secrets** as a single line, "
-                '`GROQ_API_KEY = "gsk_..."` (no section header), or in `.env` '
-                "when running locally.",
-                icon="⚠️",
-            )
+            st.warning(_no_key_message(), icon="⚠️")
+
+
+def _no_key_message() -> str:
+    """Explain the absent key in terms of what is actually configured.
+
+    Two different mistakes produce an identical symptom - "answers are quoted
+    verbatim" - and they need opposite fixes: a misspelled name versus no
+    secret at all. Only the first is distinguishable from inside the app, and
+    when it is distinguishable the message should say so rather than repeating
+    the same instruction and hoping.
+    """
+    try:
+        any_secrets = bool(len(st.secrets))
+    except Exception:  # noqa: BLE001 - no secrets file, i.e. running locally
+        any_secrets = False
+
+    if any_secrets:
+        # Secrets exist but none is a usable GROQ_API_KEY: most often it is
+        # spelled differently, or the value was pasted empty.
+        return (
+            "No `GROQ_API_KEY` found — answers are quoted verbatim from the "
+            "source rather than paraphrased.\n\n"
+            "Your app **does** have secrets set, but none of them is named "
+            "`GROQ_API_KEY`. Check the spelling, and that you pasted the key "
+            "itself rather than a label.\n\n"
+            'In **Settings → Secrets**, one line, no section header:\n\n'
+            '```\nGROQ_API_KEY = "gsk_..."\n```'
+        )
+    return (
+        "No `GROQ_API_KEY` set — answers are quoted verbatim from the source "
+        "rather than paraphrased. Retrieval, citations and guardrails all still "
+        "work; only the wording changes.\n\n"
+        "Add it in **Settings → Secrets** as a single line, with no section "
+        "header:\n\n"
+        '```\nGROQ_API_KEY = "gsk_..."\n```\n\n'
+        "Get a key at https://console.groq.com/keys, then **Save** and "
+        "**Reboot** the app — a running app does not pick up a new secret."
+    )
 
 
 def render_answer(answer) -> None:
@@ -195,12 +278,9 @@ def render_answer(answer) -> None:
                 st.caption("No detail available - check the service logs.")
         else:
             st.caption(
-                "Quoted verbatim from the source page — no `GROQ_API_KEY` was "
-                "found in the environment, so there is nothing to paraphrase "
-                "with. On Streamlit Community Cloud add it under "
-                "**Settings → Secrets** as `GROQ_API_KEY = \"gsk_...\"` at the "
-                "top level (not nested under a `[section]` header, or it will "
-                "not be injected as an environment variable)."
+                "Quoted verbatim from the source page — no `GROQ_API_KEY` could "
+                "be found, so there is nothing to paraphrase with. The sidebar "
+                "has the exact fix for your setup."
             )
 
     if answer.hits:

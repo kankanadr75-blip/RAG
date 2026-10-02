@@ -710,6 +710,87 @@ def test_fingerprint_ignores_checkout_line_endings(tmp_path):
         f"clone would reject the committed index and rebuild it every time.")
 
 
+def test_engine_accepts_an_explicit_api_key(monkeypatch):
+    """RAGEngine(api_key=...) must win over config, and None must fall back.
+
+    The UI resolves the key through st.secrets because Community Cloud only
+    exports ROOT-level secrets to the environment; the CLI passes nothing and
+    keeps reading config. Both paths have to keep working.
+    """
+    monkeypatch.setattr(config, "GROQ_API_KEY", "gsk_from_config")
+    assert RAGEngine(api_key="gsk_explicit").key_present is True
+
+    monkeypatch.setattr(config, "GROQ_API_KEY", "")
+    assert RAGEngine(api_key="gsk_explicit").key_present is True
+    assert RAGEngine(api_key=None).key_present is False
+    assert RAGEngine(api_key="   ").key_present is False
+
+
+def test_key_is_read_from_streamlit_secrets_not_just_the_environment(monkeypatch):
+    """A key under a [section] header must still be found.
+
+    Streamlit exposes only ROOT-level secrets as environment variables. A key
+    filed under a section is visible in the dashboard and to st.secrets, but
+    completely invisible to os.environ — so an app that reads only os.getenv
+    reports "no key set" while looking correctly configured to the person who
+    deployed it.
+    """
+    import app
+
+    class _FakeSecrets(dict):
+        pass
+
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+
+    # No secrets at all: the local case. Must not raise.
+    monkeypatch.setattr(app.st, "secrets", _FakeSecrets())
+    assert app._resolve_groq_key() == ("", "")
+
+    # Root level - the documented shape, and the one os.environ would also see.
+    monkeypatch.setattr(
+        app.st, "secrets",
+        _FakeSecrets({"GROQ_API_KEY": "gsk_root", "OTHER": "x"}),
+    )
+    key, source = app._resolve_groq_key()
+    assert key == "gsk_root"
+    assert "environment variable" in source or "secret" in source
+
+    # Sectioned - the case os.getenv cannot see.
+    monkeypatch.setattr(
+        app.st, "secrets",
+        _FakeSecrets({"groq": {"GROQ_API_KEY": "gsk_sectioned"}}),
+    )
+    key, source = app._resolve_groq_key()
+    assert key == "gsk_sectioned", "sectioned secret was not picked up"
+    assert "[groq]" in source, f"source should name the section, got {source!r}"
+
+    # Root wins over a section.
+    monkeypatch.setattr(
+        app.st, "secrets",
+        _FakeSecrets({"GROQ_API_KEY": "gsk_root",
+                      "groq": {"GROQ_API_KEY": "gsk_sectioned"}}),
+    )
+    assert app._resolve_groq_key()[0] == "gsk_root"
+
+    # An empty value must not count as a key.
+    monkeypatch.setattr(app.st, "secrets", _FakeSecrets({"GROQ_API_KEY": "  "}))
+    assert app._resolve_groq_key() == ("", "")
+
+
+def test_environment_variable_takes_precedence_over_secrets(monkeypatch):
+    """A real environment variable is the stronger signal; do not override it."""
+    import app
+
+    monkeypatch.setenv("GROQ_API_KEY", "gsk_from_env")
+    monkeypatch.setattr(
+        app.st, "secrets",
+        type("S", (), {"get": staticmethod(lambda *_: "gsk_from_secrets")})(),
+    )
+    key, source = app._resolve_groq_key()
+    assert key == "gsk_from_env"
+    assert "environment variable" in source
+
+
 def test_only_the_portable_sqlite_file_is_committed():
     """The HNSW binaries must stay out of git; Chroma rebuilds them itself.
 

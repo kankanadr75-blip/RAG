@@ -438,7 +438,7 @@ class RAGEngine:
     retrieval works fully offline, and Phase 8 falls back to extractive mode.
     """
 
-    def __init__(self, verbose: bool = False):
+    def __init__(self, verbose: bool = False, api_key: str | None = None):
         self.verbose = verbose
         self._model = None
         self._collection = None
@@ -448,7 +448,13 @@ class RAGEngine:
         # answer() so the UI can name the real cause instead of guessing.
         self.last_llm_error = ""
 
-        key = (config.GROQ_API_KEY or "").strip()
+        # `api_key` exists because Streamlit Community Cloud only exposes
+        # ROOT-level secrets as environment variables; a key filed under a
+        # section header is reachable through st.secrets but never through
+        # os.environ, so the UI resolves it and hands it over. The CLI passes
+        # nothing and keeps reading config, which is why the headless path has
+        # no Streamlit dependency.
+        key = ((api_key if api_key is not None else config.GROQ_API_KEY) or "").strip()
         # Whether a key was PRESENT is tracked separately from whether the
         # client object got built. The two differ when Groq(...) itself raises,
         # and answer() needs the difference in order to name the true cause.
