@@ -158,23 +158,25 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 #
 # WHY THIS ONE. qwen/qwen3.8-27b was chosen by measurement, not preference
 # (scripts/compare_models.py, same SYSTEM_PROMPT over the same retrieved
-# context):
+# context). Re-measured 2026-10-02; see GROQ_FALLBACK_MODELS below for the
+# current table, including why gpt-oss-20b is no longer disqualified.
+#
+# Original 2026-10-01 run, BEFORE `_strip_disallowed` was hardened:
 #
 #   model                  figures   invisible chars   completion tokens
 #   qwen/qwen3.8-27b        5/5       none                    53
 #   openai/gpt-oss-20b      3/5       U+202F in 4/5         548
 #   openai/gpt-oss-120b     3/5       U+202F in 3/5         540
 #
-# The gpt-oss "misses" are not wrong facts - they are U+202F NARROW NO-BREAK
-# SPACE emitted instead of a normal space, so "BSE 250" arrives as
-# "BSE<NBSP>250<NBSP>SmallCap" and "3 years" as "3<NBSP>years". The answers are
-# correct and the text renders with odd gaps. `_strip_disallowed` now normalises
-# those characters so a model swap cannot silently break a substring assertion.
+# The gpt-oss "misses" there were not wrong facts - they were U+202F NARROW
+# NO-BREAK SPACE emitted instead of a normal space, so "BSE 250" arrived as
+# "BSE<NBSP>250" and "3 years" as "3<NBSP>years". Once `_strip_disallowed`
+# normalised those characters they scored 5/5 and 4/5 respectively. The
+# lesson is recorded rather than deleted: a measurement is only valid for the
+# code it was taken against.
 #
-# qwen is also ~10x cheaper on completion tokens because the gpt-oss models bill
-# their reasoning scratchpad to the same output budget. That matters: the free
-# tier is 200k tokens/day and a reasoning model would spend ~10x of it per
-# answer.
+# qwen remains the default because it is far cheaper on completion tokens - the
+# gpt-oss models bill their reasoning scratchpad to the same output budget.
 #
 # REASONING MODELS. qwen/qwen3.8-27b is itself reasoning-capable but was verified
 # to return content-only responses here (no `reasoning` / `reasoning_content`
@@ -182,6 +184,42 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 # reach the user - `rag.py` reads `content` only and ignores reasoning fields
 # defensively, so a reasoning model is safe but wasteful here.
 GROQ_MODEL = os.getenv("GROQ_MODEL", "qwen/qwen3.8-27b")
+
+# Models to try, IN ORDER, when the one above cannot serve the request.
+#
+# Groq's free tier applies its 200,000 tokens/day budget PER MODEL, not per
+# account. When qwen's daily budget is spent, the gpt-oss models still have
+# their own untouched budget - the models fail independently. Without a
+# fallback, a spent quota collapsed every answer to a verbatim quote even
+# though a perfectly usable model was sitting right there, and the user saw
+# "the language model could not be reached" for what was really one model
+# being out of tokens for the day.
+#
+# Re-measured 2026-10-02 (scripts/compare_models.py) after `_strip_disallowed`
+# was hardened to normalise invisible Unicode. Figures are checked against the
+# FINALISED text, which is what the user actually receives:
+#
+#   model                  figures   invisible chars          completion tokens
+#   qwen/qwen3.8-27b        5/5       none                              53
+#   openai/gpt-oss-20b      5/5       U+202F in 4/5, stripped          541
+#   openai/gpt-oss-120b     4/5       U+202F in 3/5, stripped          534
+#
+# gpt-oss-20b was previously rejected at 3/5, but those "misses" were U+202F
+# narrow no-break spaces ("BSE<NBSP>250"), not wrong facts, and the hardening
+# above now removes them before the answer is shown. It is a legitimate
+# fallback today - not a downgrade in answer correctness.
+#
+# It is not free, though: gpt-oss bills its reasoning scratchpad, so completion
+# tokens are ~10x. The retrieved context dominates the request, so the real
+# cost is closer to ~1.5x per answer. That is why it is the fallback and not
+# the default - it only pays that price when qwen cannot answer at all.
+#
+# Comma-separated; set to "" to disable fallback entirely.
+GROQ_FALLBACK_MODELS = [
+    m.strip()
+    for m in os.getenv("GROQ_FALLBACK_MODELS", "openai/gpt-oss-20b").split(",")
+    if m.strip()
+]
 
 # Output budget. Only the final answer is wanted, so this is deliberately small.
 # A reasoning model can exhaust it before emitting any content and fall back to

@@ -70,25 +70,40 @@ Get a key at <https://console.groq.com/keys> (free tier: 200k tokens/day —
 enough for a few hundred questions, see [Known limits](#known-limits)).
 
 **On the model.** `qwen/qwen3.8-27b` is the default because it was chosen by
-measurement (`scripts/compare_models.py`, same prompt over the same context):
+measurement (`scripts/compare_models.py`, same prompt over the same context).
+Figures are checked against the finalised text — what the user actually sees:
 
 | model | figures stated | invisible chars | completion tokens |
 |---|---|---|---|
 | **`qwen/qwen3.8-27b`** | **5/5** | **none** | **53** |
-| `openai/gpt-oss-20b` | 3/5 | U+202F in 4/5 | 548 |
-| `openai/gpt-oss-120b` | 3/5 | U+202F in 3/5 | 540 |
+| `openai/gpt-oss-20b` | 5/5 | U+202F in 4/5, stripped | 541 |
+| `openai/gpt-oss-120b` | 4/5 | U+202F in 3/5, stripped | 534 |
 
-The gpt-oss misses are **not wrong facts** — both models emit U+202F narrow
-no-break space instead of a normal space, so `BSE 250` arrives as
-`BSE<NBSP>250<NBSP>SmallCap`. The answer is correct but the text no longer
-contains the string, which breaks substring assertions and renders with odd
-gaps. They also cost ~10x the completion tokens, because a reasoning model's
-scratchpad is billed to the same output budget. Answer text is normalised either
-way, so swapping the model cannot corrupt output.
+gpt-oss-20b first measured 3/5 and was rejected. Those misses were **not wrong
+facts** — the models emit U+202F narrow no-break space instead of a normal
+space, so `BSE 250` arrives as `BSE<NBSP>250`, which breaks substring tests and
+renders with odd gaps. `_strip_disallowed` now normalises that, so the same
+model scores 5/5 and is a legitimate fallback rather than a downgrade.
 
-Groq's daily limit is **per model**, so exhausting `qwen` does not block
-`gpt-oss`. Override in `.env` if your account serves a different subset —
-`config.py` records the verified list.
+It is not free: a gpt-oss reasoning scratchpad is billed to the same output
+budget, so completion tokens are ~10x. The retrieved context dominates the
+request, so the real cost is closer to ~1.5x per answer. That is why it is the
+fallback, not the default.
+
+**On quota.** Groq's 200k tokens/day limit is **per model**, not per account, so
+exhausting `qwen` leaves `gpt-oss` untouched. `rag.py` therefore walks a model
+chain — `GROQ_MODEL` then `GROQ_FALLBACK_MODELS` — and only drops to the
+extractive quote when every model fails. A 429 is not retried on the same model
+(a daily quota cannot recover inside a retry) and a 4xx is not retried at all,
+since repeating an identical request cannot change the outcome; a `401` aborts
+the chain immediately, because one bad key fails identically on every model.
+
+```ini
+GROQ_FALLBACK_MODELS=openai/gpt-oss-20b   # comma-separated; "" disables
+```
+
+Override in `.env` if your account serves a different subset — `config.py`
+records the verified list for this one.
 
 ### Build the index (once)
 

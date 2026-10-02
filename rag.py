@@ -72,6 +72,36 @@ def _describe_llm_error(exc: BaseException) -> str:
     return f"{label}: {detail[:300]}"
 
 
+def _is_auth_error(exc: BaseException) -> bool:
+    """True when the failure is the credential, not the model.
+
+    Groq authenticates once per account, so a rejected key fails identically on
+    every model. The chain must stop rather than replay the same 401 once per
+    model - that would turn one clear error into N misleading ones and waste
+    the round trips.
+    """
+    if getattr(exc, "status_code", None) in (401, 403):
+        return True
+    return type(exc).__name__ in ("AuthenticationError", "PermissionDeniedError")
+
+
+def _model_chain() -> list[str]:
+    """The primary model followed by its fallbacks, de-duplicated.
+
+    Order is significant: the primary is the measured-best default and the
+    fallbacks cost more tokens, so they are only reached when the primary
+    cannot serve the request at all.
+    """
+    chain = [config.GROQ_MODEL, *getattr(config, "GROQ_FALLBACK_MODELS", [])]
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for model in chain:
+        if model and model not in seen:
+            seen.add(model)
+            ordered.append(model)
+    return ordered
+
+
 @dataclass(frozen=True)
 class Hit:
     """One retrieved chunk, with the citation fields needed to answer.
@@ -424,7 +454,15 @@ class RAGEngine:
             try:
                 from groq import Groq
 
-                self.groq_client = Groq(api_key=key)
+                # max_retries=0 on purpose. The SDK's built-in retry sleeps on
+                # a 429 (observed: 58s, then 16s) before raising. For a daily
+                # token-quota 429 that sleep can never pay off - the budget is
+                # spent for the rest of the day - so it only stalls the UI for
+                # over a minute before _generate's own chain gets a turn. The
+                # chain retries deliberately instead: a different model has a
+                # separate quota, so falling through is both faster and more
+                # likely to answer.
+                self.groq_client = Groq(api_key=key, max_retries=0)
                 # Logged at init so "is the key even loaded?" is answerable from
                 # the startup log, without printing the key itself.
                 logger.info("Groq client initialised: key loaded (%d chars, "
@@ -629,11 +667,19 @@ class RAGEngine:
     # -- generation (Phase 8) ----------------------------------------------
 
     def _generate(self, question: str, hits: list[Hit]) -> str:
-        """Call Groq once, retry once, return raw content. Never raises.
+        """Call Groq and return raw content. Never raises.
 
-        Returns ``""`` on any failure so the caller can fall back to the
-        extractive path. A generation failure must never lose the answer
-        entirely - the retrieved chunk is still a valid factual answer.
+        Walks the model chain (``GROQ_MODEL`` then ``GROQ_FALLBACK_MODELS``).
+        Groq applies its free-tier 200k tokens/day budget PER MODEL, so when
+        the primary's budget is spent a fallback model still has its own
+        untouched budget. Without this, one exhausted model made every answer
+        collapse to a verbatim quote and the user was told the language model
+        "could not be reached" - true of that model, but misleading when a
+        usable one was available.
+
+        Returns ``""`` only when the entire chain fails, so the caller can fall
+        back to the extractive path. A generation failure must never lose the
+        answer entirely - the retrieved chunk is still a valid factual answer.
         """
         if self.groq_client is None:
             logger.warning(
@@ -655,40 +701,80 @@ class RAGEngine:
             },
         ]
 
+        models = _model_chain()
         last_error = ""
-        for attempt in (1, 2):
-            try:
-                resp = self.groq_client.chat.completions.create(
-                    model=config.GROQ_MODEL,
-                    messages=messages,
-                    temperature=0,
-                    max_tokens=config.GROQ_MAX_TOKENS,
-                )
+        for index, model in enumerate(models):
+            is_last = index == len(models) - 1
+            for attempt in (1, 2):
+                try:
+                    resp = self.groq_client.chat.completions.create(
+                        model=model,
+                        messages=messages,
+                        temperature=0,
+                        max_tokens=config.GROQ_MAX_TOKENS,
+                    )
+                except Exception as exc:  # noqa: BLE001
+                    last_error = _describe_llm_error(exc)
+                    # Always logged, not just under `verbose`. The UI runs with
+                    # verbose off, so gating this on verbose is what let a spent
+                    # daily token quota present as an anonymous "unavailable".
+                    logger.warning("model %s attempt %d/2 failed: %s",
+                                   model, attempt, last_error, exc_info=True)
+                    if _is_auth_error(exc):
+                        # The credential is account-wide, so every model in the
+                        # chain would reject it identically. Trying them all
+                        # just multiplies the same 401 by the chain length.
+                        logger.error("aborting model chain: the API key was "
+                                     "rejected, which affects every model. %s",
+                                     last_error)
+                        self.last_llm_error = last_error
+                        return ""
+                    status = getattr(exc, "status_code", None)
+                    if status == 429:
+                        # A rate limit is per model (and often per day), so an
+                        # immediate retry of the SAME model cannot succeed. Move
+                        # to the next model, which has its own budget.
+                        logger.warning("model %s is rate limited; %s", model,
+                                       "moving to the next model" if not is_last
+                                       else "no fallback left")
+                        break
+                    if status is not None and 400 <= status < 500:
+                        # Deterministic client-side rejection (bad model name,
+                        # malformed request). Repeating the identical request
+                        # cannot change the answer, so go straight to the next
+                        # model instead of burning a second round trip.
+                        logger.warning("model %s rejected the request (HTTP %d);"
+                                       " not retrying", model, status)
+                        break
+                    continue  # 5xx or network blip: one retry is worth it
+
                 msg = resp.choices[0].message
-                # qwen3.8-27b is reasoning-capable. It was verified to return
-                # content only, but if a variant ever emits `reasoning` /
-                # `reasoning_content` we must NOT show that to the user - it is
+                # Reasoning-capable models are safe here because only `content`
+                # is read. If a variant ever emits `reasoning` /
+                # `reasoning_content` we must NOT show it to the user - it is
                 # scratchpad, and surfacing it would break the 3-sentence rule
                 # and read as an incoherent answer.
                 content = (getattr(msg, "content", None) or "").strip()
                 if content:
                     self.last_llm_error = ""
+                    if index:
+                        logger.warning(
+                            "answered by fallback model %s after %s failed "
+                            "(see the warnings above)", model, models[0])
+                    else:
+                        logger.info("model %s answered", model)
                     return content
                 last_error = ("model returned empty content "
                               f"(finish_reason={getattr(resp.choices[0], 'finish_reason', '?')}, "
-                              f"model={config.GROQ_MODEL})")
-                logger.warning("attempt %d: %s", attempt, last_error)
-            except Exception as exc:  # noqa: BLE001
-                last_error = _describe_llm_error(exc)
-                # Always logged, not just under `verbose`. The UI runs with
-                # verbose off, so gating this on verbose is what let a spent
-                # daily token quota present as an anonymous "unavailable".
-                logger.warning("attempt %d/%d failed: %s",
-                               attempt, 2, last_error, exc_info=True)
+                              f"model={model})")
+                logger.warning("%s; trying the next model", last_error)
+                break  # retrying an empty generation rarely helps
+
         self.last_llm_error = last_error
         if last_error:
-            logger.error("generation failed after 2 attempts; falling back to "
-                         "the extractive quote. Cause: %s", last_error)
+            logger.error("generation failed across the whole chain %s; falling "
+                         "back to the extractive quote. Cause: %s",
+                         models, last_error)
         return ""
 
     def answer(self, question: str, top_k: int = config.TOP_K) -> Answer:
