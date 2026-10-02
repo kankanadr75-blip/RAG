@@ -674,6 +674,42 @@ def test_stale_index_is_detected_so_it_gets_rebuilt(monkeypatch):
         "stale index without any warning")
 
 
+def test_fingerprint_ignores_checkout_line_endings(tmp_path):
+    """A CRLF checkout must not look like a different corpus.
+
+    Git's ``core.autocrlf=true`` rewrites LF to CRLF on checkout on Windows, so
+    one commit checks out as different bytes on different machines. Hashing
+    ``ingest.py`` verbatim made every Windows clone compute a different
+    fingerprint, report the committed index as stale and re-embed 130 chunks
+    from scratch - while the Linux deploy, where the file stays LF, quietly
+    worked. Verified: the committed blob has 0 CR, a fresh clone on this
+    machine had 1321.
+    """
+    corpus = tmp_path / "raw"
+    corpus.mkdir()
+    source = tmp_path / "ingest.py"
+    source.write_bytes(b"line one\nline two\n")
+
+    pages = []
+    for name in ("a.html", "b.html"):
+        page = corpus / name
+        page.write_bytes(b"<html>\r\n<body>fact</body>\r\n</html>\r\n")
+        pages.append(page)
+
+    crlf = config.corpus_fingerprint(raw_dir=corpus, ingest_source=source)
+
+    # Rewrite every input to LF, i.e. the same content as git stores.
+    source.write_bytes(b"line one\nline two\n")
+    for page in pages:
+        page.write_bytes(page.read_bytes().replace(b"\r\n", b"\n"))
+
+    lf = config.corpus_fingerprint(raw_dir=corpus, ingest_source=source)
+
+    assert crlf == lf, (
+        f"fingerprint changed with line endings alone: {crlf} != {lf}. A Windows "
+        f"clone would reject the committed index and rebuild it every time.")
+
+
 def test_only_the_portable_sqlite_file_is_committed():
     """The HNSW binaries must stay out of git; Chroma rebuilds them itself.
 

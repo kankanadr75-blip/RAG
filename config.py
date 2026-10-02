@@ -316,7 +316,7 @@ EDUCATIONAL_LINKS = [
 ]
 
 
-def corpus_fingerprint() -> str:
+def corpus_fingerprint(*, raw_dir=None, ingest_source=None) -> str:
     """Hash of everything that determines the corpus, as 16 hex chars.
 
     The vector index is committed to the repo, so it has to be possible to tell
@@ -333,12 +333,29 @@ def corpus_fingerprint() -> str:
     calls it on every start to validate the committed index, and importing
     ``ingest`` there would pull in BeautifulSoup and requests just to hash a
     file. Reading ~5 MB of HTML plus one source file takes a few milliseconds.
+
+    Line endings are normalised before hashing. Git's ``core.autocrlf=true``
+    rewrites LF to CRLF on checkout on Windows, so the same commit checks out
+    as different bytes on different machines. Hashing verbatim would make every
+    Windows clone report a stale index and trigger a pointless full re-embed,
+    while the Linux deploy - where the file stays LF - silently worked. That is
+    not a fingerprint change anyone should be able to make by cloning a repo, so
+    the hash covers the content rather than the checkout policy.
+
+    The arguments are only overridden by the tests, which point this at a CRLF
+    copy of the corpus to prove the invariance.
     """
+    raw_dir = RAW_DIR if raw_dir is None else raw_dir
+    if ingest_source is None:
+        ingest_source = Path(__file__).resolve().parent / "ingest.py"
+
+    def _normalise(data: bytes) -> bytes:
+        return data.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
     digest = hashlib.sha256()
-    digest.update(b"corpus-v1\n")
-    ingest_source = Path(__file__).resolve().parent / "ingest.py"
-    digest.update(ingest_source.read_bytes())
-    for page in sorted(RAW_DIR.glob("*.html")):
+    digest.update(b"corpus-v2\n")
+    digest.update(_normalise(Path(ingest_source).read_bytes()))
+    for page in sorted(Path(raw_dir).glob("*.html")):
         digest.update(page.name.encode("utf-8"))
-        digest.update(page.read_bytes())
+        digest.update(_normalise(page.read_bytes()))
     return digest.hexdigest()[:16]
